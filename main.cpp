@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <iomanip>
+#include <numeric>
+
 #include <CL/sycl.hpp>
 
 class AssemblyKernel;
@@ -21,7 +23,7 @@ int main()
   for (int i = 0; i < nelem; ++i)
   {
     for (int j = 0; j < nelem_dofs; ++j)
-      dofmap(i, j) = i * 2 + j;
+      dofmap(i, j) = i + j;
   }
   int idx = dofmap.maxCoeff();
 
@@ -35,19 +37,32 @@ int main()
 
   // Count entries for each dof, and give each entry a column index
   // creating a 2D array to store contributions for each dof on a separate row
-  Eigen::ArrayXi dof_counter(npoints);
-  dof_counter.setZero();
-  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> dofidx(nelem, nelem_dofs);
+  std::vector<int> dof_counter(npoints, 0);
+  for (int i = 0; i < nelem; ++i)
+  {
+    for (int j = 0; j < nelem_dofs; ++j)
+      ++dof_counter[dofmap(i, j)];    
+  }
+  std::vector<int> dof_offsets(npoints + 1, 0);
+  std::partial_sum(dof_counter.begin(), dof_counter.end(), dof_offsets.begin() + 1);
+  assert(dof_offsets.back() == nelem * nelem_dofs);
+
+  std::vector<int> tmp_offsets(dof_offsets.begin(), dof_offsets.end());
+  Eigen::ArrayXi flat_index(nelem * nelem_dofs);
+  int c = 0;
   for (int i = 0; i < nelem; ++i)
   {
     for (int j = 0; j < nelem_dofs; ++j)
     {
-      dofidx(i, j) = dof_counter[dofmap(i, j)];
-      ++dof_counter[dofmap(i, j)];    
+      flat_index[c] = tmp_offsets[dofmap(i, j)]++;
+      ++c;
     }
   }
-  int acc_cols = dof_counter.maxCoeff() + 1;
-  Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> accum_buf(npoints, acc_cols);
+  //  std::cout << flat_index.transpose() << "\n";
+  //  exit(0);
+  
+
+  Eigen::ArrayXd accum_buf(nelem * nelem_dofs);
   accum_buf.setZero();
 
   // Global RHS vector
@@ -56,7 +71,7 @@ int main()
 
   {
     // Get a queue
-    cl::sycl::default_selector device_selector;
+    cl::sycl::cpu_selector device_selector;
     cl::sycl::queue queue(device_selector);
     
     std::cout << "Running on "
@@ -65,15 +80,15 @@ int main()
     
     cl::sycl::buffer<double, 2> geom_buf(geometry.data(), {(std::size_t)npoints, 3});
     cl::sycl::buffer<int, 2> dm_buf(dofmap.data(), {(std::size_t)dofmap.rows(), (std::size_t)dofmap.cols()});
-    cl::sycl::buffer<int, 2> col_buf(dofidx.data(), {(std::size_t)dofidx.rows(), (std::size_t)dofidx.cols()});
-    cl::sycl::buffer<double, 2> ac_buf(accum_buf.data(), {(std::size_t)accum_buf.rows(), (std::size_t)accum_buf.cols()});
+    cl::sycl::buffer<int, 1> fi_buf(flat_index.data(), (std::size_t)flat_index.size());
+    cl::sycl::buffer<double, 1> ac_buf(accum_buf.data(), (std::size_t)accum_buf.size());
     cl::sycl::range<1> nelem_sycl{(std::size_t)nelem};
     
     queue.submit([&] (cl::sycl::handler& cgh) 
                  {
                    auto access_geom = geom_buf.get_access<cl::sycl::access::mode::read>(cgh);
                    auto access_dm = dm_buf.get_access<cl::sycl::access::mode::read>(cgh);
-                   auto access_col = col_buf.get_access<cl::sycl::access::mode::read>(cgh);
+                   auto access_fi = fi_buf.get_access<cl::sycl::access::mode::read>(cgh);
                    auto access_ac = ac_buf.get_access<cl::sycl::access::mode::write>(cgh);
                    
                    auto kern = [=](cl::sycl::id<1> wiID) 
@@ -100,9 +115,8 @@ int main()
                        // Insert result into rows of 2D array corresponding to each dof
                        for (int j = 0; j < nelem_dofs; ++j)
                        {
-                         const std::size_t dmi = access_dm[wiID[0]][j];
-                         const std::size_t col = access_col[wiID[0]][j];
-                         access_ac[dmi][col] = b[j];
+                         const std::size_t idx = access_fi[wiID[0] * nelem_dofs + j];
+                         access_ac[idx] = b[j];
                        }
                        
                      };
@@ -123,18 +137,21 @@ int main()
               << "\n";
     
     cl::sycl::buffer<double, 1> gv_buf(global_vector.data(), global_vector.size());
-    cl::sycl::buffer<double, 2> ac_buf(accum_buf.data(), {(std::size_t)accum_buf.rows(), (std::size_t)accum_buf.cols()});
+    cl::sycl::buffer<int, 1> off_buf(dof_offsets.data(), dof_offsets.size());
+    cl::sycl::buffer<double, 1> ac_buf(accum_buf.data(), (std::size_t)accum_buf.size());
     cl::sycl::range<1> npoints_sycl{(std::size_t)npoints};
     
     queue.submit([&] (cl::sycl::handler& cgh) 
                  {
                    auto access_gv = gv_buf.get_access<cl::sycl::access::mode::write>(cgh);
                    auto access_ac = ac_buf.get_access<cl::sycl::access::mode::read>(cgh);
+                   auto access_off = off_buf.get_access<cl::sycl::access::mode::read>(cgh);
                    
                    auto kern = [=](cl::sycl::id<1> wiID) 
                      {
-                       for (int j = 0; j < acc_cols; ++j)
-                         access_gv[wiID[0]] += access_ac[wiID[0]][j];
+                       const int i = wiID[0];
+                       for (int j = access_off[i]; j < access_off[i + 1]; ++j)
+                         access_gv[i] += access_ac[j];
                      };
                    cgh.parallel_for<AccumulationKernel>(npoints_sycl, kern);
                  });
