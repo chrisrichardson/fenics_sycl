@@ -12,19 +12,33 @@ class AccumulationKernel;
 
 // Simple code to assemble a dummy RHS vector over some dummy geometry and
 // dofmap
-int main()
+int main(int argc, char *argv[])
 {
   int nelem = 1000;
   int nelem_dofs = 3; // For P1 Poisson on triangle
 
   // Create a dummy dofmap
-  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> dofmap(
-      nelem, nelem_dofs);
-  for (int i = 0; i < nelem; ++i)
+  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> dofmap(nelem, nelem_dofs);
+  
+  bool random_dofmap = (argc == 2 and argv[1][0] == '1');
+  if (random_dofmap)
   {
-    for (int j = 0; j < nelem_dofs; ++j)
-      dofmap(i, j) = i + j;
+    dofmap = Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>::Random(nelem, nelem_dofs);
+    dofmap = dofmap.unaryExpr([&](const int x) 
+                            { 
+                              return abs(x%100);
+                            });
   }
+  else
+  {
+    for (int i = 0; i < nelem; ++i)
+    {
+      for (int j = 0; j < nelem_dofs; ++j)
+        dofmap(i, j) = i + j;
+    }
+  }
+  
+
   int idx = dofmap.maxCoeff();
 
   // For a P1 problem, the number of geometry points is the same as the number
@@ -47,7 +61,7 @@ int main()
   assert(dof_offsets.back() == nelem * nelem_dofs);
 
   // Make a "flat index" array listing where each assembly entry should be placed.
-  // This is just a permutation, so that the entries that belong in the same index
+  // This is just a permutation, so that the entries that belong to the same dof index
   // are next to each other
   std::vector<int> tmp_offsets(dof_offsets.begin(), dof_offsets.end());
   Eigen::ArrayXi flat_index(nelem * nelem_dofs);
@@ -85,6 +99,8 @@ int main()
                    
                    auto kern = [=](cl::sycl::id<1> wiID) 
                      {
+                       const int i = wiID[0];
+                       
                        double cell_geom[9];
                        double b[3] = {0, 0, 0};
                        
@@ -93,7 +109,7 @@ int main()
                        // Pull out points for this cell
                        for (int j = 0; j < 3; ++j)
                        {
-                         const std::size_t dmi = access_dm[wiID[0]][j];
+                         const std::size_t dmi = access_dm[i][j];
                          for (int k = 0; k < 3; ++k)
                            cell_geom[j * 3 + k] = access_geom[dmi][k];
                        }
@@ -104,10 +120,10 @@ int main()
                                                                                                         cell_geom, nullptr, nullptr, 0);
                        
                        
-                       // Insert result into rows of 2D array corresponding to each dof
+                       // Insert result into array range corresponding to each dof
                        for (int j = 0; j < nelem_dofs; ++j)
                        {
-                         const std::size_t idx = access_fi[wiID[0] * nelem_dofs + j];
+                         const std::size_t idx = access_fi[i * nelem_dofs + j];
                          access_ac[idx] = b[j];
                        }
                        
