@@ -2,6 +2,7 @@
 #include "poisson.c"
 #include <Eigen/Dense>
 #include <iostream>
+#include <iomanip>
 #include <CL/sycl.hpp>
 
 class MyKernel;
@@ -39,7 +40,7 @@ int main()
   {
     
   // Get a queue
-  cl::sycl::gpu_selector device_selector;
+  cl::sycl::default_selector device_selector;
   cl::sycl::queue queue(device_selector);
   
   std::cout << "Running on "
@@ -126,6 +127,6 @@ int main()
       global_vector2[dofmap(i, j)] += b[j];
   }
 
-  std::cout << "Vector norm = " << global_vector.norm() << "\n";
-  std::cout << "Vector norm 2 = " << global_vector2.norm() << "\n";
+  std::cout << "Vector norm = " << std::setprecision(20) << global_vector.norm() << "\n";
+  std::cout << "Vector norm 2 = " << std::setprecision(20) << global_vector2.norm() << "\n";
 }
