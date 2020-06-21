@@ -1,5 +1,5 @@
 
-#include "poisson.h"
+#include "poisson.c"
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -7,10 +7,6 @@
 // dofmap
 int main()
 {
-  ufc_form* L = create_form_poisson_L();
-  ufc_integral* integral = L->create_cell_integral(-1);
-  auto kernel = integral->tabulate_tensor;
-
   int nelem = 1000;
   int nelem_dofs = 3; // For P1 Poisson on triangle
 
@@ -50,8 +46,9 @@ int main()
       cell_geometry.row(j) = geometry.row(dofmap(i, j));
 
     // Get local values
-    kernel(b.data(), w.data(), nullptr, cell_geometry.data(), nullptr, nullptr,
-           0);
+    tabulate_tensor_integral_cell_otherwise_b67e00d4067e0c970c3a0a79f0d0600104ce7791(
+                                                                                     b.data(), w.data(), nullptr, 
+                                                                                     cell_geometry.data(), nullptr, nullptr, 0);
 
     // Fill global vector
     for (int j = 0; j < 3; ++j)
