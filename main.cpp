@@ -35,8 +35,7 @@ int main()
       = Eigen::Array<double, Eigen::Dynamic, 3, Eigen::RowMajor>::Random(
           npoints, 3);
 
-  // Count entries for each dof, and give each entry a column index
-  // creating a 2D array to store contributions for each dof on a separate row
+  // Count number of entries for each dof and make offset array
   std::vector<int> dof_counter(npoints, 0);
   for (int i = 0; i < nelem; ++i)
   {
@@ -47,31 +46,24 @@ int main()
   std::partial_sum(dof_counter.begin(), dof_counter.end(), dof_offsets.begin() + 1);
   assert(dof_offsets.back() == nelem * nelem_dofs);
 
+  // Make a "flat index" array listing where each assembly entry should be placed.
+  // This is just a permutation, so that the entries that belong in the same index
+  // are next to each other
   std::vector<int> tmp_offsets(dof_offsets.begin(), dof_offsets.end());
   Eigen::ArrayXi flat_index(nelem * nelem_dofs);
-  int c = 0;
   for (int i = 0; i < nelem; ++i)
   {
     for (int j = 0; j < nelem_dofs; ++j)
-    {
-      flat_index[c] = tmp_offsets[dofmap(i, j)]++;
-      ++c;
-    }
-  }
-  //  std::cout << flat_index.transpose() << "\n";
-  //  exit(0);
-  
+      flat_index[i * nelem_dofs + j] = tmp_offsets[dofmap(i, j)]++;
+  }  
 
+  // Memory to accumulate assembly entries before summing
   Eigen::ArrayXd accum_buf(nelem * nelem_dofs);
   accum_buf.setZero();
 
-  // Global RHS vector
-  Eigen::VectorXd global_vector(npoints);
-  global_vector.setZero();
-
   {
     // Get a queue
-    cl::sycl::cpu_selector device_selector;
+    cl::sycl::default_selector device_selector;
     cl::sycl::queue queue(device_selector);
     
     std::cout << "Running on "
@@ -126,7 +118,11 @@ int main()
   }
 
 
-  // Second kernel to accumulate row at each dof
+  // Global RHS vector (into which accum_buf will be summed)
+  Eigen::VectorXd global_vector(npoints);
+  global_vector.setZero();
+
+  // Second kernel to accumulate for each dof
   {
     // Get a queue
     cl::sycl::default_selector device_selector;
