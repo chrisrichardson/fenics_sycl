@@ -1,11 +1,13 @@
 
+#include <CL/sycl.hpp>
+
 #include "poisson.c"
 #include <Eigen/Dense>
 #include <iostream>
 #include <iomanip>
 #include <numeric>
 
-#include <CL/sycl.hpp>
+
 
 class AssemblyKernel;
 class AccumulationKernel;
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
     dofmap = Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>::Random(nelem, nelem_dofs);
     dofmap = dofmap.unaryExpr([&](const int x) 
                             { 
-                              return abs(x%100);
+return abs(x%(nelem/2));
                             });
   }
   else
@@ -71,9 +73,8 @@ int main(int argc, char *argv[])
       flat_index[i * nelem_dofs + j] = tmp_offsets[dofmap(i, j)]++;
   }  
 
-  // Memory to accumulate assembly entries before summing
-  Eigen::ArrayXd accum_buf(nelem * nelem_dofs);
-  accum_buf.setZero();
+  // Device memory to accumulate assembly entries before summing
+  cl::sycl::buffer<double, 1> ac_buf(cl::sycl::range<1>{(std::size_t)(nelem * nelem_dofs)});
 
   {
     // Get a queue
@@ -87,7 +88,6 @@ int main(int argc, char *argv[])
     cl::sycl::buffer<double, 2> geom_buf(geometry.data(), {(std::size_t)npoints, 3});
     cl::sycl::buffer<int, 2> dm_buf(dofmap.data(), {(std::size_t)dofmap.rows(), (std::size_t)dofmap.cols()});
     cl::sycl::buffer<int, 1> fi_buf(flat_index.data(), (std::size_t)flat_index.size());
-    cl::sycl::buffer<double, 1> ac_buf(accum_buf.data(), (std::size_t)accum_buf.size());
     cl::sycl::range<1> nelem_sycl{(std::size_t)nelem};
     
     queue.submit([&] (cl::sycl::handler& cgh) 
@@ -136,7 +136,6 @@ int main(int argc, char *argv[])
 
   // Global RHS vector (into which accum_buf will be summed)
   Eigen::VectorXd global_vector(npoints);
-  global_vector.setZero();
 
   // Second kernel to accumulate for each dof
   {
@@ -150,7 +149,6 @@ int main(int argc, char *argv[])
     
     cl::sycl::buffer<double, 1> gv_buf(global_vector.data(), global_vector.size());
     cl::sycl::buffer<int, 1> off_buf(dof_offsets.data(), dof_offsets.size());
-    cl::sycl::buffer<double, 1> ac_buf(accum_buf.data(), (std::size_t)accum_buf.size());
     cl::sycl::range<1> npoints_sycl{(std::size_t)npoints};
     
     queue.submit([&] (cl::sycl::handler& cgh) 
@@ -162,6 +160,7 @@ int main(int argc, char *argv[])
                    auto kern = [=](cl::sycl::id<1> wiID) 
                      {
                        const int i = wiID[0];
+                       access_gv[i] = 0.0;
                        for (int j = access_off[i]; j < access_off[i + 1]; ++j)
                          access_gv[i] += access_ac[j];
                      };

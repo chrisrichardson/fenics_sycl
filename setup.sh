@@ -3,9 +3,9 @@
 # Setup for GPU
 
 module use /home/cnr12/rds/hpc-work/modules
-module load fenicsx/dev
 module load gcc/9
 module load computecpp
+module load fenicsx/dev
 
 EIGEN=`pwd`/eigen
 UFC=`python3 -c 'import ffcx.codegeneration ; print(ffcx.codegeneration.get_include_path())'`
