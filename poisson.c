@@ -13,7 +13,7 @@
 //   'tabulate_tensor_void': False}
 
 
-typedef double ufc_scalar_t;                   
+typedef double ufc_scalar_t;
 #include <math.h>
 #include <stdalign.h>
 #include <stdbool.h>
@@ -49,9 +49,8 @@ void tabulate_tensor_integral_cell_otherwise_b67e00d4067e0c970c3a0a79f0d0600104c
     sp[0] = J_c0 * J_c3;
     sp[1] = J_c1 * J_c2;
     sp[2] = sp[0] + -1 * sp[1];
-    sp[3] = cl::sycl::fabs(sp[2]);
-    //    if (sp[3] < 0)
-    //      sp[3] = -sp[2];
+    sp[3] = (sp[2] < 0) ? -sp[2] : sp[2];
+
     for (int iq = 0; iq < 3; ++iq)
     {
         // Quadrature loop body setup (num_points=3)

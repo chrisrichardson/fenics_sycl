@@ -9,9 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 enable_testing()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set(COMPUTECPP_USER_FLAGS "--gcc-toolchain=/usr/local/software/master/gcc/9")
+# set(COMPUTECPP_USER_FLAGS "--gcc-toolchain=/usr/local/software/master/gcc/9")
 
 add_executable(rhsass main.cpp)
 add_sycl_to_target(TARGET rhsass SOURCES main.cpp)
-
-
