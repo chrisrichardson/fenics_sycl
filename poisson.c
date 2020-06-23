@@ -3,13 +3,16 @@
 //
 // This code was generated with the following parameters:
 //
-//  {'epsilon': 1e-14,
-//   'external_includes': '',
+//  {'alignas': 32,
+//   'assume_aligned': -1,
+//   'epsilon': 1e-14,
+//   'padlen': 1,
 //   'precision': -1,
 //   'quadrature_degree': -1,
-//   'quadrature_rule': 'auto',
-//   'representation': 'auto',
+//   'quadrature_rule': 'default',
 //   'scalar_type': 'double',
+//   'table_atol': 1e-09,
+//   'table_rtol': 1e-06,
 //   'tabulate_tensor_void': False}
 
 
@@ -21,47 +24,1478 @@ typedef double ufc_scalar_t;
 #include <string.h>
 #include <ufc.h>
 
+// Code for element element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
 
-void tabulate_tensor_integral_cell_otherwise_b67e00d4067e0c970c3a0a79f0d0600104ce7791(ufc_scalar_t* A,
-                                    const ufc_scalar_t* w,
-                                    const ufc_scalar_t* c,
-                                    const double* coordinate_dofs,
+int value_dimension_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int i)
+{
+  return 1;
+}
+
+int reference_value_dimension_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int i)
+{
+  return 1;
+}
+
+int evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double*  reference_values,
+                                            int num_points,
+                                            const double*  X)
+{
+  static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients2[1][3] = { { 0.4714045207910316, 0.0, 0.3333333333333333 } };
+for (int k = 0; k < num_points * 3; ++k)
+    reference_values[k] = 0.0;
+for (int ip = 0; ip < num_points; ++ip)
+{
+    // Compute basisvalues for each relevant embedded degree
+    double basisvalues1[3] = { 0 };
+    basisvalues1[0] = 1.0;
+    const double tmp1_1 = ((1.0 + 2.0 * (2 * X[ip * 2] - 1)) + (2 * X[ip * 2 + 1] - 1)) / 2.0;
+    basisvalues1[1] = tmp1_1;
+    basisvalues1[2] = (0.5 + 1.5 * (2 * X[ip * 2 + 1] - 1)) * basisvalues1[0];
+    basisvalues1[0] *= sqrt(0.5);
+    basisvalues1[2] *= sqrt(1.0);
+    basisvalues1[1] *= sqrt(3.0);
+    // Accumulate products of coefficients and basisvalues
+    for (int r = 0; r < 3; ++r)
+        reference_values[3 * ip] += coefficients0[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[3 * ip + 1] += coefficients1[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[3 * ip + 2] += coefficients2[0][r] * basisvalues1[r];
+}
+return 0;
+}
+
+int evaluate_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double *  reference_values,
+                                          int order, int num_points,
+                                          const double *  X)
+{
+  if (order == 0)
+    return evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(reference_values, num_points, X);
+const int num_derivatives = pow(2, order);
+for (int l0 = 0; l0 < (num_points * 3) * num_derivatives; ++l0)
+    reference_values[l0] = 0.0;
+if (order > 1)
+    return 0;
+// Tables of derivatives of the polynomial base (transpose).
+alignas(32) static const double dmats0[2][3][3] =
+    { { { 0.0, 0.0, 0.0 },
+        { 4.8989794855663495, 0.0, 0.0 },
+        { 0.0, 0.0, 0.0 } },
+      { { 0.0, 0.0, 0.0 },
+        { 2.449489742783182, 0.0, 0.0 },
+        { 4.242640687119285, 0.0, 0.0 } } };
+static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients2[1][3] = { { 0.4714045207910316, 0.0, 0.3333333333333333 } };
+const int reference_offset[3] = { 0 };
+const int num_components[3] = { 1, 1, 1 };
+// Precomputed combinations
+const int combinations[1][2][1] =
+    { { { 0 },
+        { 1 } } };
+for (int ip = 0; ip < num_points; ++ip)
+{
+    // Compute basisvalues for each relevant embedded degree
+    double basisvalues1[3] = { 0 };
+    basisvalues1[0] = 1.0;
+    const double tmp1_1 = ((1.0 + 2.0 * (2 * X[ip * 2] - 1)) + (2 * X[ip * 2 + 1] - 1)) / 2.0;
+    basisvalues1[1] = tmp1_1;
+    basisvalues1[2] = (0.5 + 1.5 * (2 * X[ip * 2 + 1] - 1)) * basisvalues1[0];
+    basisvalues1[0] *= sqrt(0.5);
+    basisvalues1[2] *= sqrt(1.0);
+    basisvalues1[1] *= sqrt(3.0);
+    // Loop over all dofs
+    for (int i = 0; i < 3; ++i)
+    {
+        double derivatives[2] = { 0 };
+        switch (i)
+        {
+        case 0:
+            // Compute reference derivatives for dof 0.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients0[0][s] * aux[s];
+            }
+            break;
+        case 1:
+            // Compute reference derivatives for dof 1.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients1[0][s] * aux[s];
+            }
+            break;
+        case 2:
+            // Compute reference derivatives for dof 2.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients2[0][s] * aux[s];
+            }
+            break;
+        }
+        for (int r = 0; r < num_derivatives; ++r)
+            for (int c = 0; c < num_components[i]; ++c)
+                reference_values[(((3 * num_derivatives) * ip + num_derivatives * i) + r) + (reference_offset[i] + c)] = derivatives[num_derivatives * c + r];
+    }
+}
+return 0;
+}
+
+int transform_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(
+    double *  values, int order, int num_points,
+    const double *  reference_values,
+    const double *  X, const double *  J,
+    const double *  detJ, const double *  K,
+    const uint32_t cell_permutation)
+{
+  const int num_derivatives = pow(2, order);
+// Precomputed combinations
+const int combinations[1][2][1] =
+    { { { 0 },
+        { 1 } } };
+for (int l = 0; l < (num_points * 3) * num_derivatives; ++l)
+    values[l] = 0.0;
+const int reference_offsets[3] = { 0 };
+const int physical_offsets[3] = { 0 };
+for (int ip = 0; ip < num_points; ++ip)
+{
+    double transform[2][2];
+    for (int r = 0; r < num_derivatives; ++r)
+        for (int s = 0; s < num_derivatives; ++s)
+            transform[r][s] = 1.0;
+    for (int r = 0; r < num_derivatives; ++r)
+        for (int s = 0; s < num_derivatives; ++s)
+            for (int k = 0; k < order; ++k)
+                transform[r][s] *= K[((2 * 2) * ip + 2 * combinations[order - 1][s][k]) + combinations[order - 1][r][k]];
+    for (int d = 0; d < 3; ++d)
+    {
+        for (int s = 0; s < num_derivatives; ++s)
+        {
+            for (int i = 0; i < 1; ++i)
+            {
+                // Using affine transform to map values back to the physical element.
+                const double mapped_value = reference_values[(((3 * num_derivatives) * ip + num_derivatives * d) + s) + reference_offsets[d]];
+                // Mapping derivatives back to the physical element
+                for (int r = 0; r < num_derivatives; ++r)
+                    values[(((3 * num_derivatives) * ip + num_derivatives * d) + r) + (physical_offsets[d] + i)] += transform[r][s] * mapped_value;
+            }
+        }
+    }
+}
+// Using affine transform to map values back to the physical element.
+return 0;
+}
+
+int transform_values_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(
+     ufc_scalar_t*  reference_values,
+     const ufc_scalar_t*  physical_values,
+     const double*  coordinate_dofs,
+     const ufc_coordinate_mapping*  cm)
+{
+  reference_values[0] = physical_values[0];
+reference_values[1] = physical_values[1];
+reference_values[2] = physical_values[2];
+return 0;
+}
+
+int tabulate_reference_dof_coordinates_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double*  reference_dof_coordinates)
+{
+  static const double dof_X[6] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0 };
+memcpy(reference_dof_coordinates, dof_X, 6*sizeof(double));
+return 0;
+}
+
+
+ufc_finite_element* create_sub_element_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int i)
+{
+  return NULL;
+}
+
+ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void)
+{
+  ufc_finite_element* element = (ufc_finite_element*)malloc(sizeof(*element));
+
+  element->signature = "FiniteElement('Lagrange', triangle, 1)";
+  element->cell_shape = triangle;
+  element->topological_dimension = 2;
+  element->geometric_dimension = 2;
+  element->space_dimension = 3;
+  element->value_rank = 0;
+  element->value_dimension = value_dimension_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->value_size = 1;
+  element->reference_value_rank = 0;
+  element->reference_value_dimension = reference_value_dimension_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->reference_value_size = 1;
+  element->degree = 1;
+  element->family = "Lagrange";
+  element->evaluate_reference_basis = evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->evaluate_reference_basis_derivatives = evaluate_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->transform_reference_basis_derivatives = transform_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->transform_values = transform_values_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->tabulate_reference_dof_coordinates = tabulate_reference_dof_coordinates_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->num_sub_elements = 0;
+  element->create_sub_element = create_sub_element_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  element->create = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+
+  return element;
+}
+
+// End of code for element element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
+
+// Code for element element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6
+
+int value_dimension_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int i)
+{
+  static const int return_values[1] = { 2 };
+if (i >= 1)
+    return 1;
+return return_values[i];
+}
+
+int reference_value_dimension_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int i)
+{
+  static const int return_values[1] = { 2 };
+if (i >= 1)
+    return 1;
+return return_values[i];
+}
+
+int evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double*  reference_values,
+                                            int num_points,
+                                            const double*  X)
+{
+  static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients2[1][3] = { { 0.4714045207910316, 0.0, 0.3333333333333333 } };
+for (int k = 0; k < (num_points * 6) * 2; ++k)
+    reference_values[k] = 0.0;
+for (int ip = 0; ip < num_points; ++ip)
+{
+    // Compute basisvalues for each relevant embedded degree
+    double basisvalues1[3] = { 0 };
+    basisvalues1[0] = 1.0;
+    const double tmp1_1 = ((1.0 + 2.0 * (2 * X[ip * 2] - 1)) + (2 * X[ip * 2 + 1] - 1)) / 2.0;
+    basisvalues1[1] = tmp1_1;
+    basisvalues1[2] = (0.5 + 1.5 * (2 * X[ip * 2 + 1] - 1)) * basisvalues1[0];
+    basisvalues1[0] *= sqrt(0.5);
+    basisvalues1[2] *= sqrt(1.0);
+    basisvalues1[1] *= sqrt(3.0);
+    // Accumulate products of coefficients and basisvalues
+    for (int r = 0; r < 3; ++r)
+        reference_values[(6 * 2) * ip] += coefficients0[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[(6 * 2) * ip + 2] += coefficients1[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[(6 * 2) * ip + 2 * 2] += coefficients2[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[((6 * 2) * ip + 2 * 3) + 1] += coefficients0[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[((6 * 2) * ip + 2 * 4) + 1] += coefficients1[0][r] * basisvalues1[r];
+    for (int r = 0; r < 3; ++r)
+        reference_values[((6 * 2) * ip + 2 * 5) + 1] += coefficients2[0][r] * basisvalues1[r];
+}
+return 0;
+}
+
+int evaluate_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double *  reference_values,
+                                          int order, int num_points,
+                                          const double *  X)
+{
+  if (order == 0)
+    return evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(reference_values, num_points, X);
+const int num_derivatives = pow(2, order);
+for (int l0 = 0; l0 < ((num_points * 6) * num_derivatives) * 2; ++l0)
+    reference_values[l0] = 0.0;
+if (order > 1)
+    return 0;
+// Tables of derivatives of the polynomial base (transpose).
+alignas(32) static const double dmats0[2][3][3] =
+    { { { 0.0, 0.0, 0.0 },
+        { 4.8989794855663495, 0.0, 0.0 },
+        { 0.0, 0.0, 0.0 } },
+      { { 0.0, 0.0, 0.0 },
+        { 2.449489742783182, 0.0, 0.0 },
+        { 4.242640687119285, 0.0, 0.0 } } };
+static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
+static const double coefficients2[1][3] = { { 0.4714045207910316, 0.0, 0.3333333333333333 } };
+const int reference_offset[6] = { 0, 0, 0, 1, 1, 1 };
+const int num_components[6] = { 1, 1, 1, 1, 1, 1 };
+// Precomputed combinations
+const int combinations[1][2][1] =
+    { { { 0 },
+        { 1 } } };
+for (int ip = 0; ip < num_points; ++ip)
+{
+    // Compute basisvalues for each relevant embedded degree
+    double basisvalues1[3] = { 0 };
+    basisvalues1[0] = 1.0;
+    const double tmp1_1 = ((1.0 + 2.0 * (2 * X[ip * 2] - 1)) + (2 * X[ip * 2 + 1] - 1)) / 2.0;
+    basisvalues1[1] = tmp1_1;
+    basisvalues1[2] = (0.5 + 1.5 * (2 * X[ip * 2 + 1] - 1)) * basisvalues1[0];
+    basisvalues1[0] *= sqrt(0.5);
+    basisvalues1[2] *= sqrt(1.0);
+    basisvalues1[1] *= sqrt(3.0);
+    // Loop over all dofs
+    for (int i = 0; i < 6; ++i)
+    {
+        double derivatives[2] = { 0 };
+        switch (i)
+        {
+        case 0:
+            // Compute reference derivatives for dof 0.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients0[0][s] * aux[s];
+            }
+            break;
+        case 1:
+            // Compute reference derivatives for dof 1.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients1[0][s] * aux[s];
+            }
+            break;
+        case 2:
+            // Compute reference derivatives for dof 2.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients2[0][s] * aux[s];
+            }
+            break;
+        case 3:
+            // Compute reference derivatives for dof 3.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients0[0][s] * aux[s];
+            }
+            break;
+        case 4:
+            // Compute reference derivatives for dof 4.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients1[0][s] * aux[s];
+            }
+            break;
+        case 5:
+            // Compute reference derivatives for dof 5.
+            for (int r = 0; r < num_derivatives; ++r)
+            {
+                double aux[3] = { 0 };
+                // Declare derivative matrix (of polynomial basis).
+                double dmats[3][3] = {{ 0 }};
+                // Initialize dmats.
+                int comb = combinations[order - 1][r][0];
+                memcpy(&dmats[0][0], &dmats0[comb][0][0], 9*sizeof(double));
+                // Looping derivative order to generate dmats.
+                for (int s = 1; s < order; ++s)
+                {
+                    // Store previous dmats matrix.
+                    double dmats_old[3][3];
+                    memcpy(&dmats_old[0][0], &dmats[0][0], 9*sizeof(double));
+                    // Resetting dmats.
+                    for (int l0 = 0; l0 < 3; ++l0)
+                        for (int l1 = 0; l1 < 3; ++l1)
+                            dmats[l0][l1] = 0.0;
+                    // Update dmats using an inner product.
+                    comb = combinations[order - 1][r][s];
+                    for (int t = 0; t < 3; ++t)
+                        for (int u = 0; u < 3; ++u)
+                            for (int tu = 0; tu < 3; ++tu)
+                                dmats[t][u] += dmats0[comb][t][tu] * dmats_old[tu][u];
+                }
+                for (int s = 0; s < 3; ++s)
+                    for (int t = 0; t < 3; ++t)
+                        aux[s] += dmats[s][t] * basisvalues1[t];
+                derivatives[r] = 0.0;
+                for (int s = 0; s < 3; ++s)
+                    derivatives[r] += coefficients2[0][s] * aux[s];
+            }
+            break;
+        }
+        for (int r = 0; r < num_derivatives; ++r)
+            for (int c = 0; c < num_components[i]; ++c)
+                reference_values[(((6 * (num_derivatives * 2)) * ip + (num_derivatives * 2) * i) + 2 * r) + (reference_offset[i] + c)] = derivatives[num_derivatives * c + r];
+    }
+}
+return 0;
+}
+
+int transform_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(
+    double *  values, int order, int num_points,
+    const double *  reference_values,
+    const double *  X, const double *  J,
+    const double *  detJ, const double *  K,
+    const uint32_t cell_permutation)
+{
+  const int num_derivatives = pow(2, order);
+// Precomputed combinations
+const int combinations[1][2][1] =
+    { { { 0 },
+        { 1 } } };
+for (int l = 0; l < ((num_points * 6) * num_derivatives) * 2; ++l)
+    values[l] = 0.0;
+const int reference_offsets[6] = { 0, 0, 0, 1, 1, 1 };
+const int physical_offsets[6] = { 0, 0, 0, 1, 1, 1 };
+for (int ip = 0; ip < num_points; ++ip)
+{
+    double transform[2][2];
+    for (int r = 0; r < num_derivatives; ++r)
+        for (int s = 0; s < num_derivatives; ++s)
+            transform[r][s] = 1.0;
+    for (int r = 0; r < num_derivatives; ++r)
+        for (int s = 0; s < num_derivatives; ++s)
+            for (int k = 0; k < order; ++k)
+                transform[r][s] *= K[((2 * 2) * ip + 2 * combinations[order - 1][s][k]) + combinations[order - 1][r][k]];
+    for (int d = 0; d < 6; ++d)
+    {
+        for (int s = 0; s < num_derivatives; ++s)
+        {
+            for (int i = 0; i < 1; ++i)
+            {
+                // Using affine transform to map values back to the physical element.
+                const double mapped_value = reference_values[(((6 * (num_derivatives * 2)) * ip + (num_derivatives * 2) * d) + 2 * s) + reference_offsets[d]];
+                // Mapping derivatives back to the physical element
+                for (int r = 0; r < num_derivatives; ++r)
+                    values[(((6 * (num_derivatives * 2)) * ip + (num_derivatives * 2) * d) + 2 * r) + (physical_offsets[d] + i)] += transform[r][s] * mapped_value;
+            }
+        }
+    }
+}
+// Using affine transform to map values back to the physical element.
+return 0;
+}
+
+int transform_values_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(
+     ufc_scalar_t*  reference_values,
+     const ufc_scalar_t*  physical_values,
+     const double*  coordinate_dofs,
+     const ufc_coordinate_mapping*  cm)
+{
+  reference_values[0] = physical_values[0];
+reference_values[1] = physical_values[2];
+reference_values[2] = physical_values[4];
+reference_values[3] = physical_values[7];
+reference_values[4] = physical_values[9];
+reference_values[5] = physical_values[11];
+return 0;
+}
+
+int tabulate_reference_dof_coordinates_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double*  reference_dof_coordinates)
+{
+  static const double dof_X[12] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0 };
+memcpy(reference_dof_coordinates, dof_X, 12*sizeof(double));
+return 0;
+}
+
+ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_finite_element* create_sub_element_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int i)
+{
+  switch (i)
+{
+case 0:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_finite_element* create_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(void)
+{
+  ufc_finite_element* element = (ufc_finite_element*)malloc(sizeof(*element));
+
+  element->signature = "VectorElement(FiniteElement('Lagrange', triangle, 1), dim=2)";
+  element->cell_shape = triangle;
+  element->topological_dimension = 2;
+  element->geometric_dimension = 2;
+  element->space_dimension = 6;
+  element->value_rank = 1;
+  element->value_dimension = value_dimension_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->value_size = 2;
+  element->reference_value_rank = 1;
+  element->reference_value_dimension = reference_value_dimension_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->reference_value_size = 2;
+  element->degree = 1;
+  element->family = "Lagrange";
+  element->evaluate_reference_basis = evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->evaluate_reference_basis_derivatives = evaluate_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->transform_reference_basis_derivatives = transform_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->transform_values = transform_values_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->tabulate_reference_dof_coordinates = tabulate_reference_dof_coordinates_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->num_sub_elements = 2;
+  element->create_sub_element = create_sub_element_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  element->create = create_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+
+  return element;
+}
+
+// End of code for element element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6
+
+// Code for dofmap dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
+
+void tabulate_entity_dofs_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int*  dofs, int d, int i)
+{
+switch (d)
+{
+case 0:
+    switch (i)
+    {
+    case 0:
+        dofs[0] = 0;
+        break;
+    case 1:
+        dofs[0] = 1;
+        break;
+    case 2:
+        dofs[0] = 2;
+        break;
+    }
+    break;
+}
+}
+
+
+ufc_dofmap* create_sub_dofmap_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int i)
+{
+return NULL;
+}
+
+ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void)
+{
+  ufc_dofmap* dofmap = (ufc_dofmap*)malloc(sizeof(*dofmap));
+  dofmap->signature = "FFCX dofmap for FiniteElement('Lagrange', triangle, 1)";
+  dofmap->num_global_support_dofs = 0;
+  dofmap->num_element_support_dofs = 3;
+  dofmap->num_entity_dofs[0] = 1;
+  dofmap->num_entity_dofs[1] = 0;
+  dofmap->num_entity_dofs[2] = 0;
+  dofmap->num_entity_dofs[3] = 0;
+  dofmap->tabulate_entity_dofs = tabulate_entity_dofs_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  dofmap->num_sub_dofmaps = 0;
+  dofmap->create_sub_dofmap = create_sub_dofmap_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  dofmap->create = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+
+  dofmap->size_base_permutations = 9;
+  static const int bp[9] = {0,1,2,0,1,2,0,1,2};
+  dofmap->base_permutations = bp;
+
+
+  return dofmap;
+}
+
+// End of code for dofmap dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
+
+// Code for dofmap dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6
+
+void tabulate_entity_dofs_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int*  dofs, int d, int i)
+{
+switch (d)
+{
+case 0:
+    switch (i)
+    {
+    case 0:
+        dofs[0] = 0;
+        dofs[1] = 3;
+        break;
+    case 1:
+        dofs[0] = 1;
+        dofs[1] = 4;
+        break;
+    case 2:
+        dofs[0] = 2;
+        dofs[1] = 5;
+        break;
+    }
+    break;
+}
+}
+
+ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_dofmap* create_sub_dofmap_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int i)
+{
+switch (i)
+{
+case 0:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_dofmap* create_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(void)
+{
+  ufc_dofmap* dofmap = (ufc_dofmap*)malloc(sizeof(*dofmap));
+  dofmap->signature = "FFCX dofmap for VectorElement(FiniteElement('Lagrange', triangle, 1), dim=2)";
+  dofmap->num_global_support_dofs = 0;
+  dofmap->num_element_support_dofs = 6;
+  dofmap->num_entity_dofs[0] = 2;
+  dofmap->num_entity_dofs[1] = 0;
+  dofmap->num_entity_dofs[2] = 0;
+  dofmap->num_entity_dofs[3] = 0;
+  dofmap->tabulate_entity_dofs = tabulate_entity_dofs_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  dofmap->num_sub_dofmaps = 2;
+  dofmap->create_sub_dofmap = create_sub_dofmap_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+  dofmap->create = create_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6;
+
+  dofmap->size_base_permutations = 18;
+  static const int bp[18] = {0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5};
+  dofmap->base_permutations = bp;
+
+
+  return dofmap;
+}
+
+// End of code for dofmap dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6
+
+// Code for coordinate mapping coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b
+
+ufc_coordinate_mapping* create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b(void)
+{
+  ufc_coordinate_mapping* cmap = (ufc_coordinate_mapping*)malloc(sizeof(*cmap));
+  cmap->signature = "FFCX coordinate_mapping from VectorElement(FiniteElement('Lagrange', triangle, 1), dim=2)";
+  cmap->create = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+  cmap->geometric_dimension = 2;
+  cmap->topological_dimension = 2;
+  cmap->is_affine = 1;
+  cmap->cell_shape = triangle;
+  cmap->create_scalar_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  cmap->evaluate_basis_derivatives = evaluate_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+  return cmap;
+}
+
+ufc_coordinate_mapping* create_coordinate_map_poisson(void)
+{
+  return create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b();
+}
+
+
+// End of code for coordinate mapping coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b
+
+// Code for integral integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+
+
+void tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b(ufc_scalar_t*  A,
+                                    const ufc_scalar_t*  w,
+                                    const ufc_scalar_t*  c,
+                                    const double*  coordinate_dofs,
                                     const int*  unused_local_index,
-                                    const uint8_t* quadrature_permutation,
+                                    const uint8_t*  quadrature_permutation,
                                     const uint32_t cell_permutation)
 {
     // Quadrature rules
-    alignas(32) static const double weights3[3] = { 0.1666666666666667, 0.1666666666666667, 0.1666666666666667 };
+    alignas(32) static const double weights_083[1] = { 0.5 };
     // Precomputed values of basis functions and precomputations
     // FE* dimensions: [permutation][entities][points][dofs]
-    alignas(32) static const double FE3_C0_Q3[1][1][3][3] =
-        { { { { 0.6666666666666667, 0.1666666666666666, 0.1666666666666667 },
-              { 0.1666666666666667, 0.1666666666666666, 0.6666666666666665 },
-              { 0.1666666666666666, 0.6666666666666666, 0.1666666666666666 } } } };
-    alignas(32) static const double FE4_C0_D01_Q3[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
-    alignas(32) static const double FE4_C0_D10_Q3[1][1][1][2] = { { { { -1.0, 1.0 } } } };
-    // Unstructured piecewise computations
-    const double J_c0 = coordinate_dofs[0] * FE4_C0_D10_Q3[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D10_Q3[0][0][0][1];
-    const double J_c3 = coordinate_dofs[1] * FE4_C0_D01_Q3[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D01_Q3[0][0][0][1] + coordinate_dofs[5] * FE4_C0_D01_Q3[0][0][0][2];
-    const double J_c1 = coordinate_dofs[0] * FE4_C0_D01_Q3[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D01_Q3[0][0][0][1] + coordinate_dofs[4] * FE4_C0_D01_Q3[0][0][0][2];
-    const double J_c2 = coordinate_dofs[1] * FE4_C0_D10_Q3[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D10_Q3[0][0][0][1];
-    alignas(32) ufc_scalar_t sp[4];
-    sp[0] = J_c0 * J_c3;
-    sp[1] = J_c1 * J_c2;
-    sp[2] = sp[0] + -1 * sp[1];
-    sp[3] = (sp[2] < 0) ? -sp[2] : sp[2];
-
-    for (int iq = 0; iq < 3; ++iq)
+    alignas(32) static const double FE3_C0_D01_Q083[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    alignas(32) static const double FE3_C0_D10_Q083[1][1][1][2] = { { { { -1.0, 1.0 } } } };
+    // Quadrature loop independent computations for quadrature rule 083
+    const double J_c0 = coordinate_dofs[0] * FE3_C0_D10_Q083[0][0][0][0] + coordinate_dofs[2] * FE3_C0_D10_Q083[0][0][0][1];
+    const double J_c3 = coordinate_dofs[1] * FE3_C0_D01_Q083[0][0][0][0] + coordinate_dofs[3] * FE3_C0_D01_Q083[0][0][0][1] + coordinate_dofs[5] * FE3_C0_D01_Q083[0][0][0][2];
+    const double J_c1 = coordinate_dofs[0] * FE3_C0_D01_Q083[0][0][0][0] + coordinate_dofs[2] * FE3_C0_D01_Q083[0][0][0][1] + coordinate_dofs[4] * FE3_C0_D01_Q083[0][0][0][2];
+    const double J_c2 = coordinate_dofs[1] * FE3_C0_D10_Q083[0][0][0][0] + coordinate_dofs[3] * FE3_C0_D10_Q083[0][0][0][1];
+    alignas(32) ufc_scalar_t sp_083[23];
+    sp_083[0] = J_c0 * J_c3;
+    sp_083[1] = J_c1 * J_c2;
+    sp_083[2] = sp_083[0] + -1 * sp_083[1];
+    sp_083[3] = J_c0 / sp_083[2];
+    sp_083[4] = (-1 * J_c1) / sp_083[2];
+    sp_083[5] = sp_083[3] * sp_083[3];
+    sp_083[6] = sp_083[3] * sp_083[4];
+    sp_083[7] = sp_083[4] * sp_083[4];
+    sp_083[8] = J_c3 / sp_083[2];
+    sp_083[9] = (-1 * J_c2) / sp_083[2];
+    sp_083[10] = sp_083[9] * sp_083[9];
+    sp_083[11] = sp_083[8] * sp_083[9];
+    sp_083[12] = sp_083[8] * sp_083[8];
+    sp_083[13] = sp_083[5] + sp_083[10];
+    sp_083[14] = sp_083[6] + sp_083[11];
+    sp_083[15] = sp_083[12] + sp_083[7];
+    sp_083[16] = c[0] * sp_083[13];
+    sp_083[17] = c[0] * sp_083[14];
+    sp_083[18] = c[0] * sp_083[15];
+    sp_083[19] = fabs(sp_083[2]);
+    sp_083[20] = sp_083[16] * sp_083[19];
+    sp_083[21] = sp_083[17] * sp_083[19];
+    sp_083[22] = sp_083[18] * sp_083[19];
+    for (int iq = 0; iq < 1; ++iq)
     {
-        // Quadrature loop body setup (num_points=3)
-        // Unstructured varying computations for num_points=3
-        ufc_scalar_t w0 = 0.0;
-        for (int ic = 0; ic < 3; ++ic)
-            w0 += w[ic] * FE3_C0_Q3[0][0][iq][ic];
-        alignas(32) ufc_scalar_t sv3[1];
-        sv3[0] = sp[3] * w0;
-        const ufc_scalar_t fw0 = sv3[0] * weights3[iq];
+        const ufc_scalar_t fw0 = sp_083[22] * weights_083[iq];
+        for (int i = 0; i < 2; ++i)
+            for (int j = 0; j < 2; ++j)
+                A[3 * i + j] += fw0 * FE3_C0_D10_Q083[0][0][0][i] * FE3_C0_D10_Q083[0][0][0][j];
+        const ufc_scalar_t fw1 = sp_083[21] * weights_083[iq];
+        for (int i = 0; i < 2; ++i)
+            for (int j = 0; j < 3; ++j)
+                A[3 * i + j] += fw1 * FE3_C0_D10_Q083[0][0][0][i] * FE3_C0_D01_Q083[0][0][0][j];
         for (int i = 0; i < 3; ++i)
-            A[i] += fw0 * FE3_C0_Q3[0][0][iq][i];
+            for (int j = 0; j < 2; ++j)
+                A[3 * i + j] += fw1 * FE3_C0_D01_Q083[0][0][0][i] * FE3_C0_D10_Q083[0][0][0][j];
+        const ufc_scalar_t fw2 = sp_083[20] * weights_083[iq];
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                A[3 * i + j] += fw2 * FE3_C0_D01_Q083[0][0][0][i] * FE3_C0_D01_Q083[0][0][0][j];
     }
 }
+
+
+ufc_integral* create_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+{
+  static const bool enabled[1] = {false};  /* No coefficients, but C does not permit zero-sized arrays */
+  ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
+  integral->enabled_coefficients = enabled;
+  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  return integral;
+}
+
+// End of code for integral integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+
+// Code for integral integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+
+
+void tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(ufc_scalar_t*  A,
+                                    const ufc_scalar_t*  w,
+                                    const ufc_scalar_t*  c,
+                                    const double*  coordinate_dofs,
+                                    const int*  unused_local_index,
+                                    const uint8_t*  quadrature_permutation,
+                                    const uint32_t cell_permutation)
+{
+    // Quadrature rules
+    alignas(32) static const double weights_48e[3] = { 0.1666666666666667, 0.1666666666666667, 0.1666666666666667 };
+    // Precomputed values of basis functions and precomputations
+    // FE* dimensions: [permutation][entities][points][dofs]
+    alignas(32) static const double FE3_C0_Q48e[1][1][3][3] =
+        { { { { 0.6666666666666669, 0.1666666666666666, 0.1666666666666667 },
+              { 0.1666666666666667, 0.1666666666666666, 0.6666666666666665 },
+              { 0.1666666666666667, 0.6666666666666665, 0.1666666666666666 } } } };
+    alignas(32) static const double FE4_C0_D01_Q48e[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    alignas(32) static const double FE4_C0_D10_Q48e[1][1][1][2] = { { { { -1.0, 1.0 } } } };
+    // Quadrature loop independent computations for quadrature rule 48e
+    const double J_c0 = coordinate_dofs[0] * FE4_C0_D10_Q48e[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D10_Q48e[0][0][0][1];
+    const double J_c3 = coordinate_dofs[1] * FE4_C0_D01_Q48e[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D01_Q48e[0][0][0][1] + coordinate_dofs[5] * FE4_C0_D01_Q48e[0][0][0][2];
+    const double J_c1 = coordinate_dofs[0] * FE4_C0_D01_Q48e[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D01_Q48e[0][0][0][1] + coordinate_dofs[4] * FE4_C0_D01_Q48e[0][0][0][2];
+    const double J_c2 = coordinate_dofs[1] * FE4_C0_D10_Q48e[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D10_Q48e[0][0][0][1];
+    alignas(32) ufc_scalar_t sp_48e[4];
+    sp_48e[0] = J_c0 * J_c3;
+    sp_48e[1] = J_c1 * J_c2;
+    sp_48e[2] = sp_48e[0] + -1 * sp_48e[1];
+    sp_48e[3] = fabs(sp_48e[2]);
+    for (int iq = 0; iq < 3; ++iq)
+    {
+        // Quadrature loop body setup for quadrature rule 48e
+        // Varying computations for quadrature rule 48e
+        ufc_scalar_t w0 = 0.0;
+        for (int ic = 0; ic < 3; ++ic)
+            w0 += w[ic] * FE3_C0_Q48e[0][0][iq][ic];
+        alignas(32) ufc_scalar_t sv_48e[1];
+        sv_48e[0] = sp_48e[3] * w0;
+        const ufc_scalar_t fw0 = sv_48e[0] * weights_48e[iq];
+        for (int i = 0; i < 3; ++i)
+            A[i] += fw0 * FE3_C0_Q48e[0][0][iq][i];
+    }
+}
+
+
+ufc_integral* create_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+  static const bool enabled[2] = { true, false };
+  ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
+  integral->enabled_coefficients = enabled;
+  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  return integral;
+}
+
+// End of code for integral integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+
+// Code for integral integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+
+
+void tabulate_tensor_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(ufc_scalar_t*  A,
+                                    const ufc_scalar_t*  w,
+                                    const ufc_scalar_t*  c,
+                                    const double*  coordinate_dofs,
+                                    const int*  facet,
+                                    const uint8_t*  quadrature_permutation,
+                                    const uint32_t cell_permutation)
+{
+    // Quadrature rules
+    alignas(32) static const double weights_4a8[2] = { 0.5, 0.5 };
+    // Precomputed values of basis functions and precomputations
+    // FE* dimensions: [permutation][entities][points][dofs]
+    alignas(32) static const double FE3_C0_F_Q4a8[2][3][2][3] =
+        { { { { 0.0, 0.7886751345948129, 0.2113248654051871 },
+              { 0.0, 0.2113248654051872, 0.7886751345948129 } },
+            { { 0.7886751345948129, 0.0, 0.2113248654051871 },
+              { 0.2113248654051872, 0.0, 0.7886751345948129 } },
+            { { 0.7886751345948129, 0.2113248654051872, 0.0 },
+              { 0.2113248654051872, 0.7886751345948129, 0.0 } } },
+          { { { 0.0, 0.2113248654051872, 0.7886751345948129 },
+              { 0.0, 0.7886751345948129, 0.2113248654051871 } },
+            { { 0.2113248654051872, 0.0, 0.7886751345948129 },
+              { 0.7886751345948129, 0.0, 0.2113248654051871 } },
+            { { 0.2113248654051872, 0.7886751345948129, 0.0 },
+              { 0.7886751345948129, 0.2113248654051872, 0.0 } } } };
+    alignas(32) static const double FE4_C0_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
+    alignas(32) static const double FE4_C0_D10_F_Q4a8[1][1][1][2] = { { { { -1.0, 1.0 } } } };
+    // Quadrature loop independent computations for quadrature rule 4a8
+    const double J_c0 = coordinate_dofs[0] * FE4_C0_D10_F_Q4a8[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D10_F_Q4a8[0][0][0][1];
+    const double J_c1 = coordinate_dofs[0] * FE4_C0_D01_F_Q4a8[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D01_F_Q4a8[0][0][0][1] + coordinate_dofs[4] * FE4_C0_D01_F_Q4a8[0][0][0][2];
+    const double J_c2 = coordinate_dofs[1] * FE4_C0_D10_F_Q4a8[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D10_F_Q4a8[0][0][0][1];
+    const double J_c3 = coordinate_dofs[1] * FE4_C0_D01_F_Q4a8[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D01_F_Q4a8[0][0][0][1] + coordinate_dofs[5] * FE4_C0_D01_F_Q4a8[0][0][0][2];
+    alignas(32) ufc_scalar_t sp_4a8[10];
+    sp_4a8[0] = J_c0 * triangle_reference_facet_jacobian[facet[0]][0][0];
+    sp_4a8[1] = J_c1 * triangle_reference_facet_jacobian[facet[0]][1][0];
+    sp_4a8[2] = sp_4a8[0] + sp_4a8[1];
+    sp_4a8[3] = sp_4a8[2] * sp_4a8[2];
+    sp_4a8[4] = triangle_reference_facet_jacobian[facet[0]][0][0] * J_c2;
+    sp_4a8[5] = triangle_reference_facet_jacobian[facet[0]][1][0] * J_c3;
+    sp_4a8[6] = sp_4a8[4] + sp_4a8[5];
+    sp_4a8[7] = sp_4a8[6] * sp_4a8[6];
+    sp_4a8[8] = sp_4a8[3] + sp_4a8[7];
+    sp_4a8[9] = sqrt(sp_4a8[8]);
+    for (int iq = 0; iq < 2; ++iq)
+    {
+        // Quadrature loop body setup for quadrature rule 4a8
+        // Varying computations for quadrature rule 4a8
+        ufc_scalar_t w1 = 0.0;
+        for (int ic = 0; ic < 3; ++ic)
+            w1 += w[3 + ic] * FE3_C0_F_Q4a8[quadrature_permutation[0]][facet[0]][iq][ic];
+        alignas(32) ufc_scalar_t sv_4a8[1];
+        sv_4a8[0] = sp_4a8[9] * w1;
+        const ufc_scalar_t fw0 = sv_4a8[0] * weights_4a8[iq];
+        for (int i = 0; i < 3; ++i)
+            A[i] += fw0 * FE3_C0_F_Q4a8[quadrature_permutation[0]][facet[0]][iq][i];
+    }
+}
+
+
+ufc_integral* create_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+  static const bool enabled[2] = { false, true };
+  ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
+  integral->enabled_coefficients = enabled;
+  integral->tabulate_tensor = tabulate_tensor_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  return integral;
+}
+
+// End of code for integral integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+
+// Code for form form_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+
+int original_coefficient_position_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+{
+// Invalid original coefficient index.
+return -1;
+}
+
+// Return a list of the coefficient names.
+const char** coefficient_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+{
+return NULL;
+}
+
+// Return a list of the constant names.
+const char** constant_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+{
+static const char* names[1] = { "kappa" };
+return names;
+}
+
+ufc_coordinate_mapping* create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b(void);
+
+ufc_coordinate_mapping* create_coordinate_mapping_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+{
+return create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b();
+}
+
+ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_finite_element* create_finite_element_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+{
+switch (i)
+{
+case 0:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_dofmap* create_dofmap_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+{
+switch (i)
+{
+case 0:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_integral* create_cell_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+{
+  switch (subdomain_id)
+{
+case -1:
+    return create_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b();
+default:
+    return NULL;
+}
+}
+
+void get_cell_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+{
+  ids[0] = -1;
+return;
+}
+
+ufc_integral* create_exterior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+{
+  return NULL;
+}
+
+void get_exterior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+{
+  return;
+}
+
+ufc_integral* create_interior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+{
+return NULL;
+}
+
+void get_interior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+{
+  return;
+}
+
+ufc_integral* create_vertex_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+{
+return NULL;
+}
+
+void get_vertex_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+{
+  return;
+}
+
+ufc_custom_integral* create_custom_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+{
+return NULL;
+}
+
+void get_custom_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+{
+  return;
+}
+
+ufc_form* create_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+{
+  ufc_form* form = (ufc_form*)malloc(sizeof(*form));
+
+  form->signature = "978826b7ccb7620d73d2e489936793d043d77856e05cb58da369d7a3f715b906730c0fde429a2fbce635fadb8e56878cc766bcbfc02ceb589b034225dc863423";
+  form->rank = 2;
+  form->num_coefficients = 0;
+  form->num_constants = 1;
+  form->original_coefficient_position = original_coefficient_position_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+
+  form->coefficient_name_map = coefficient_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->constant_name_map = constant_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+
+  form->create_coordinate_mapping = create_coordinate_mapping_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_finite_element = create_finite_element_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_dofmap = create_dofmap_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+
+  form->get_cell_integral_ids = get_cell_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->get_vertex_integral_ids = get_vertex_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->get_custom_integral_ids = get_custom_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+
+  form->num_cell_integrals = 1;
+  form->num_exterior_facet_integrals = 0;
+  form->num_interior_facet_integrals = 0;
+  form->num_vertex_integrals = 0;
+  form->num_custom_integrals = 0;
+
+  form->create_cell_integral = create_cell_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_exterior_facet_integral = create_exterior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_interior_facet_integral = create_interior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_vertex_integral = create_vertex_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_custom_integral = create_custom_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+
+  return form;
+}
+
+ufc_form* create_form_poisson_a(void)
+{
+  return create_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b();
+}
+
+ufc_function_space* create_functionspace_form_poisson_a(const char* function_name)
+{
+  if (strcmp(function_name, "v") == 0)
+{
+    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
+    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+    return space;
+}
+else if (strcmp(function_name, "u") == 0)
+{
+    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
+    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+    return space;
+}
+return NULL;
+
+}
+
+// End of code for form form_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+
+// Code for form form_70ac65295cde4ee9720845a2b33df1637e8afd59
+
+int original_coefficient_position_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+{
+if (i >= 2)
+{
+    // Invalid original coefficient index.
+    return -1;
+}
+static const int position[2] = { 0, 1 };
+return position[i];
+}
+
+// Return a list of the coefficient names.
+const char** coefficient_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+static const char* names[2] = { "f", "g" };
+return names;
+}
+
+// Return a list of the constant names.
+const char** constant_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+return NULL;
+}
+
+ufc_coordinate_mapping* create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b(void);
+
+ufc_coordinate_mapping* create_coordinate_mapping_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+return create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b();
+}
+
+ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_finite_element* create_finite_element_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+{
+switch (i)
+{
+case 0:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 2:
+    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
+
+ufc_dofmap* create_dofmap_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+{
+switch (i)
+{
+case 0:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 1:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+case 2:
+    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
+default:
+    return NULL;
+}
+}
+
+ufc_integral* create_cell_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+{
+  switch (subdomain_id)
+{
+case -1:
+    return create_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59();
+default:
+    return NULL;
+}
+}
+
+void get_cell_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+{
+  ids[0] = -1;
+return;
+}
+
+ufc_integral* create_exterior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+{
+  switch (subdomain_id)
+{
+case -1:
+    return create_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59();
+default:
+    return NULL;
+}
+}
+
+void get_exterior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+{
+  ids[0] = -1;
+return;
+}
+
+ufc_integral* create_interior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+{
+return NULL;
+}
+
+void get_interior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+{
+  return;
+}
+
+ufc_integral* create_vertex_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+{
+return NULL;
+}
+
+void get_vertex_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+{
+  return;
+}
+
+ufc_custom_integral* create_custom_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+{
+return NULL;
+}
+
+void get_custom_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+{
+  return;
+}
+
+ufc_form* create_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+{
+  ufc_form* form = (ufc_form*)malloc(sizeof(*form));
+
+  form->signature = "c21e4b8225a06c865b1f6bc50789ab26a096d3b0d2aa6da671abca48fc3af12bf1c8bf5ce9222b5262f53aaf4355d51682ac6c504f77abeba824f9746d853a49";
+  form->rank = 1;
+  form->num_coefficients = 2;
+  form->num_constants = 0;
+  form->original_coefficient_position = original_coefficient_position_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+
+  form->coefficient_name_map = coefficient_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->constant_name_map = constant_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+
+  form->create_coordinate_mapping = create_coordinate_mapping_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_finite_element = create_finite_element_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_dofmap = create_dofmap_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+
+  form->get_cell_integral_ids = get_cell_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->get_vertex_integral_ids = get_vertex_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->get_custom_integral_ids = get_custom_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+
+  form->num_cell_integrals = 1;
+  form->num_exterior_facet_integrals = 1;
+  form->num_interior_facet_integrals = 0;
+  form->num_vertex_integrals = 0;
+  form->num_custom_integrals = 0;
+
+  form->create_cell_integral = create_cell_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_exterior_facet_integral = create_exterior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_interior_facet_integral = create_interior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_vertex_integral = create_vertex_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_custom_integral = create_custom_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+
+  return form;
+}
+
+ufc_form* create_form_poisson_L(void)
+{
+  return create_form_70ac65295cde4ee9720845a2b33df1637e8afd59();
+}
+
+ufc_function_space* create_functionspace_form_poisson_L(const char* function_name)
+{
+  if (strcmp(function_name, "v") == 0)
+{
+    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
+    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+    return space;
+}
+else if (strcmp(function_name, "f") == 0)
+{
+    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
+    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+    return space;
+}
+else if (strcmp(function_name, "g") == 0)
+{
+    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
+    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
+    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
+    return space;
+}
+return NULL;
+
+}
+
+// End of code for form form_70ac65295cde4ee9720845a2b33df1637e8afd59

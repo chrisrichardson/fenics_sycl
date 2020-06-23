@@ -1,11 +1,15 @@
 
 #include <CL/sycl.hpp>
 
+// Need to include C file in same translation unit as lambda
 #include "poisson.c"
+
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+
+#include "dolfin_interface.h"
 
 class AssemblyKernel;
 class AccumulationKernel;
@@ -14,39 +18,14 @@ class AccumulationKernel;
 // dofmap
 int main(int argc, char* argv[])
 {
-  int nelem = 1000;
-  int nelem_dofs = 3; // For P1 Poisson on triangle
-
-  // Create a dummy dofmap
-  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> dofmap(
-      nelem, nelem_dofs);
-
-  bool random_dofmap = (argc == 2 and argv[1][0] == '1');
-  if (random_dofmap)
-  {
-    dofmap = Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic,
-                          Eigen::RowMajor>::Random(nelem, nelem_dofs);
-    dofmap
-        = dofmap.unaryExpr([&](const int x) { return abs(x % (nelem / 2)); });
-  }
-  else
-  {
-    for (int i = 0; i < nelem; ++i)
-    {
-      for (int j = 0; j < nelem_dofs; ++j)
-        dofmap(i, j) = i + j;
-    }
-  }
+  // Get dolfin data
+  auto [dofmap, geometry, function_dm] = create_arrays(argc, argv);
+  int nelem = dofmap.rows();
+  int nelem_dofs = dofmap.cols();
 
   int idx = dofmap.maxCoeff();
-
-  // For a P1 problem, the number of geometry points is the same as the number
-  // of dofs
   int npoints = idx + 1;
   std::cout << "npoints = " << npoints << "\n";
-  Eigen::Array<double, Eigen::Dynamic, 3, Eigen::RowMajor> geometry
-      = Eigen::Array<double, Eigen::Dynamic, 3, Eigen::RowMajor>::Random(
-          npoints, 3);
 
   // Count number of entries for each dof and make offset array
   std::vector<int> dof_counter(npoints, 0);
@@ -74,7 +53,6 @@ int main(int argc, char* argv[])
   // Device memory to accumulate assembly entries before summing
   cl::sycl::buffer<double, 1> ac_buf(
       cl::sycl::range<1>{(std::size_t)(nelem * nelem_dofs)});
-
   {
     // Get a queue
     cl::sycl::default_selector device_selector;
@@ -102,7 +80,7 @@ int main(int argc, char* argv[])
       auto kern = [=](cl::sycl::id<1> wiID) {
         const int i = wiID[0];
 
-        double cell_geom[9];
+        double cell_geom[6];
         double b[3] = {0, 0, 0};
 
         double w[3] = {1., 2., 3.};
@@ -111,12 +89,12 @@ int main(int argc, char* argv[])
         for (int j = 0; j < 3; ++j)
         {
           const std::size_t dmi = access_dm[i][j];
-          for (int k = 0; k < 3; ++k)
-            cell_geom[j * 3 + k] = access_geom[dmi][k];
+          for (int k = 0; k < 2; ++k)
+            cell_geom[j * 2 + k] = access_geom[dmi][k];
         }
 
         // Get local values
-        tabulate_tensor_integral_cell_otherwise_b67e00d4067e0c970c3a0a79f0d0600104ce7791(
+        tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(
             b, w, nullptr, cell_geom, nullptr, nullptr, 0);
 
         // Insert result into array range corresponding to each dof
@@ -174,17 +152,17 @@ int main(int argc, char* argv[])
   // Element local RHS
   Eigen::Array<double, 3, 1> b;
   // Element local geometry
-  Eigen::Array<double, 3, 3, Eigen::RowMajor> cell_geometry;
+  Eigen::Array<double, 3, 2, Eigen::RowMajor> cell_geometry;
 
   for (int i = 0; i < nelem; ++i)
   {
     // Pull out points for this cell
     for (int j = 0; j < 3; ++j)
-      cell_geometry.row(j) = geometry.row(dofmap(i, j));
+      cell_geometry.row(j) = geometry.row(dofmap(i, j)).head(2);
 
     b.setZero();
     // Get local values
-    tabulate_tensor_integral_cell_otherwise_b67e00d4067e0c970c3a0a79f0d0600104ce7791(
+    tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(
         b.data(), w.data(), nullptr, cell_geometry.data(), nullptr, nullptr, 0);
 
     // Fill global vector
