@@ -23,6 +23,7 @@ typedef double ufc_scalar_t;
 #include <stdlib.h>
 #include <string.h>
 #include <ufc.h>
+#define restrict __restrict__
 
 // Code for element element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
 
@@ -36,9 +37,9 @@ int reference_value_dimension_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(i
   return 1;
 }
 
-int evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double*  reference_values,
+int evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double* restrict reference_values,
                                             int num_points,
-                                            const double*  X)
+                                            const double* restrict X)
 {
   static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
 static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
@@ -67,9 +68,9 @@ for (int ip = 0; ip < num_points; ++ip)
 return 0;
 }
 
-int evaluate_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double *  reference_values,
+int evaluate_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double * restrict reference_values,
                                           int order, int num_points,
-                                          const double *  X)
+                                          const double * restrict X)
 {
   if (order == 0)
     return evaluate_reference_basis_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(reference_values, num_points, X);
@@ -227,10 +228,10 @@ return 0;
 }
 
 int transform_reference_basis_derivatives_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(
-    double *  values, int order, int num_points,
-    const double *  reference_values,
-    const double *  X, const double *  J,
-    const double *  detJ, const double *  K,
+    double * restrict values, int order, int num_points,
+    const double * restrict reference_values,
+    const double * restrict X, const double * restrict J,
+    const double * restrict detJ, const double * restrict K,
     const uint32_t cell_permutation)
 {
   const int num_derivatives = pow(2, order);
@@ -272,10 +273,10 @@ return 0;
 }
 
 int transform_values_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(
-     ufc_scalar_t*  reference_values,
-     const ufc_scalar_t*  physical_values,
-     const double*  coordinate_dofs,
-     const ufc_coordinate_mapping*  cm)
+     ufc_scalar_t* restrict reference_values,
+     const ufc_scalar_t* restrict physical_values,
+     const double* restrict coordinate_dofs,
+     const ufc_coordinate_mapping* restrict cm)
 {
   reference_values[0] = physical_values[0];
 reference_values[1] = physical_values[1];
@@ -283,7 +284,7 @@ reference_values[2] = physical_values[2];
 return 0;
 }
 
-int tabulate_reference_dof_coordinates_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double*  reference_dof_coordinates)
+int tabulate_reference_dof_coordinates_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(double* restrict reference_dof_coordinates)
 {
   static const double dof_X[6] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0 };
 memcpy(reference_dof_coordinates, dof_X, 6*sizeof(double));
@@ -345,9 +346,9 @@ if (i >= 1)
 return return_values[i];
 }
 
-int evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double*  reference_values,
+int evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double* restrict reference_values,
                                             int num_points,
-                                            const double*  X)
+                                            const double* restrict X)
 {
   static const double coefficients0[1][3] = { { 0.4714045207910317, -0.2886751345948129, -0.16666666666666666 } };
 static const double coefficients1[1][3] = { { 0.4714045207910317, 0.2886751345948129, -0.16666666666666666 } };
@@ -382,9 +383,9 @@ for (int ip = 0; ip < num_points; ++ip)
 return 0;
 }
 
-int evaluate_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double *  reference_values,
+int evaluate_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double * restrict reference_values,
                                           int order, int num_points,
-                                          const double *  X)
+                                          const double * restrict X)
 {
   if (order == 0)
     return evaluate_reference_basis_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(reference_values, num_points, X);
@@ -647,10 +648,10 @@ return 0;
 }
 
 int transform_reference_basis_derivatives_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(
-    double *  values, int order, int num_points,
-    const double *  reference_values,
-    const double *  X, const double *  J,
-    const double *  detJ, const double *  K,
+    double * restrict values, int order, int num_points,
+    const double * restrict reference_values,
+    const double * restrict X, const double * restrict J,
+    const double * restrict detJ, const double * restrict K,
     const uint32_t cell_permutation)
 {
   const int num_derivatives = pow(2, order);
@@ -692,10 +693,10 @@ return 0;
 }
 
 int transform_values_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(
-     ufc_scalar_t*  reference_values,
-     const ufc_scalar_t*  physical_values,
-     const double*  coordinate_dofs,
-     const ufc_coordinate_mapping*  cm)
+     ufc_scalar_t* restrict reference_values,
+     const ufc_scalar_t* restrict physical_values,
+     const double* restrict coordinate_dofs,
+     const ufc_coordinate_mapping* restrict cm)
 {
   reference_values[0] = physical_values[0];
 reference_values[1] = physical_values[2];
@@ -706,7 +707,7 @@ reference_values[5] = physical_values[11];
 return 0;
 }
 
-int tabulate_reference_dof_coordinates_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double*  reference_dof_coordinates)
+int tabulate_reference_dof_coordinates_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(double* restrict reference_dof_coordinates)
 {
   static const double dof_X[12] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0 };
 memcpy(reference_dof_coordinates, dof_X, 12*sizeof(double));
@@ -761,7 +762,7 @@ ufc_finite_element* create_element_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(void
 
 // Code for dofmap dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
 
-void tabulate_entity_dofs_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int*  dofs, int d, int i)
+void tabulate_entity_dofs_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(int* restrict dofs, int d, int i)
 {
 switch (d)
 {
@@ -815,7 +816,7 @@ ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void)
 
 // Code for dofmap dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6
 
-void tabulate_entity_dofs_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int*  dofs, int d, int i)
+void tabulate_entity_dofs_dofmap_cbc1b6b934128ebb62b59ad00e0a37aae1c406a6(int* restrict dofs, int d, int i)
 {
 switch (d)
 {
@@ -903,15 +904,15 @@ ufc_coordinate_mapping* create_coordinate_map_poisson(void)
 
 // End of code for coordinate mapping coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b
 
-// Code for integral integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+// Code for integral integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058
 
 
-void tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b(ufc_scalar_t*  A,
-                                    const ufc_scalar_t*  w,
-                                    const ufc_scalar_t*  c,
-                                    const double*  coordinate_dofs,
-                                    const int*  unused_local_index,
-                                    const uint8_t*  quadrature_permutation,
+void tabulate_tensor_integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(ufc_scalar_t* restrict A,
+                                    const ufc_scalar_t* restrict w,
+                                    const ufc_scalar_t* restrict c,
+                                    const double* restrict coordinate_dofs,
+                                    const int* restrict unused_local_index,
+                                    const uint8_t* restrict quadrature_permutation,
                                     const uint32_t cell_permutation)
 {
     // Quadrature rules
@@ -925,7 +926,7 @@ void tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd
     const double J_c3 = coordinate_dofs[1] * FE3_C0_D01_Q083[0][0][0][0] + coordinate_dofs[3] * FE3_C0_D01_Q083[0][0][0][1] + coordinate_dofs[5] * FE3_C0_D01_Q083[0][0][0][2];
     const double J_c1 = coordinate_dofs[0] * FE3_C0_D01_Q083[0][0][0][0] + coordinate_dofs[2] * FE3_C0_D01_Q083[0][0][0][1] + coordinate_dofs[4] * FE3_C0_D01_Q083[0][0][0][2];
     const double J_c2 = coordinate_dofs[1] * FE3_C0_D10_Q083[0][0][0][0] + coordinate_dofs[3] * FE3_C0_D10_Q083[0][0][0][1];
-    alignas(32) ufc_scalar_t sp_083[23];
+    alignas(32) ufc_scalar_t sp_083[20];
     sp_083[0] = J_c0 * J_c3;
     sp_083[1] = J_c1 * J_c2;
     sp_083[2] = sp_083[0] + -1 * sp_083[1];
@@ -942,27 +943,24 @@ void tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd
     sp_083[13] = sp_083[5] + sp_083[10];
     sp_083[14] = sp_083[6] + sp_083[11];
     sp_083[15] = sp_083[12] + sp_083[7];
-    sp_083[16] = c[0] * sp_083[13];
-    sp_083[17] = c[0] * sp_083[14];
-    sp_083[18] = c[0] * sp_083[15];
-    sp_083[19] = fabs(sp_083[2]);
-    sp_083[20] = sp_083[16] * sp_083[19];
-    sp_083[21] = sp_083[17] * sp_083[19];
-    sp_083[22] = sp_083[18] * sp_083[19];
+    sp_083[16] = fabs(sp_083[2]);
+    sp_083[17] = sp_083[13] * sp_083[16];
+    sp_083[18] = sp_083[14] * sp_083[16];
+    sp_083[19] = sp_083[15] * sp_083[16];
     for (int iq = 0; iq < 1; ++iq)
     {
-        const ufc_scalar_t fw0 = sp_083[22] * weights_083[iq];
+        const ufc_scalar_t fw0 = sp_083[19] * weights_083[iq];
         for (int i = 0; i < 2; ++i)
             for (int j = 0; j < 2; ++j)
                 A[3 * i + j] += fw0 * FE3_C0_D10_Q083[0][0][0][i] * FE3_C0_D10_Q083[0][0][0][j];
-        const ufc_scalar_t fw1 = sp_083[21] * weights_083[iq];
+        const ufc_scalar_t fw1 = sp_083[18] * weights_083[iq];
         for (int i = 0; i < 2; ++i)
             for (int j = 0; j < 3; ++j)
                 A[3 * i + j] += fw1 * FE3_C0_D10_Q083[0][0][0][i] * FE3_C0_D01_Q083[0][0][0][j];
         for (int i = 0; i < 3; ++i)
             for (int j = 0; j < 2; ++j)
                 A[3 * i + j] += fw1 * FE3_C0_D01_Q083[0][0][0][i] * FE3_C0_D10_Q083[0][0][0][j];
-        const ufc_scalar_t fw2 = sp_083[20] * weights_083[iq];
+        const ufc_scalar_t fw2 = sp_083[17] * weights_083[iq];
         for (int i = 0; i < 3; ++i)
             for (int j = 0; j < 3; ++j)
                 A[3 * i + j] += fw2 * FE3_C0_D01_Q083[0][0][0][i] * FE3_C0_D01_Q083[0][0][0][j];
@@ -970,26 +968,26 @@ void tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd
 }
 
 
-ufc_integral* create_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+ufc_integral* create_integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(void)
 {
   static const bool enabled[1] = {false};  /* No coefficients, but C does not permit zero-sized arrays */
   ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
   integral->enabled_coefficients = enabled;
-  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
   return integral;
 }
 
-// End of code for integral integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+// End of code for integral integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058
 
-// Code for integral integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+// Code for integral integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
 
 
-void tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(ufc_scalar_t*  A,
-                                    const ufc_scalar_t*  w,
-                                    const ufc_scalar_t*  c,
-                                    const double*  coordinate_dofs,
-                                    const int*  unused_local_index,
-                                    const uint8_t*  quadrature_permutation,
+void tabulate_tensor_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(ufc_scalar_t* restrict A,
+                                    const ufc_scalar_t* restrict w,
+                                    const ufc_scalar_t* restrict c,
+                                    const double* restrict coordinate_dofs,
+                                    const int* restrict unused_local_index,
+                                    const uint8_t* restrict quadrature_permutation,
                                     const uint32_t cell_permutation)
 {
     // Quadrature rules
@@ -1028,121 +1026,47 @@ void tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8
 }
 
 
-ufc_integral* create_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+ufc_integral* create_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(void)
 {
-  static const bool enabled[2] = { true, false };
+  static const bool enabled[1] = { true };
   ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
   integral->enabled_coefficients = enabled;
-  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  integral->tabulate_tensor = tabulate_tensor_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
   return integral;
 }
 
-// End of code for integral integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+// End of code for integral integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
 
-// Code for integral integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
+// Code for form form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058
 
-
-void tabulate_tensor_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(ufc_scalar_t*  A,
-                                    const ufc_scalar_t*  w,
-                                    const ufc_scalar_t*  c,
-                                    const double*  coordinate_dofs,
-                                    const int*  facet,
-                                    const uint8_t*  quadrature_permutation,
-                                    const uint32_t cell_permutation)
-{
-    // Quadrature rules
-    alignas(32) static const double weights_4a8[2] = { 0.5, 0.5 };
-    // Precomputed values of basis functions and precomputations
-    // FE* dimensions: [permutation][entities][points][dofs]
-    alignas(32) static const double FE3_C0_F_Q4a8[2][3][2][3] =
-        { { { { 0.0, 0.7886751345948129, 0.2113248654051871 },
-              { 0.0, 0.2113248654051872, 0.7886751345948129 } },
-            { { 0.7886751345948129, 0.0, 0.2113248654051871 },
-              { 0.2113248654051872, 0.0, 0.7886751345948129 } },
-            { { 0.7886751345948129, 0.2113248654051872, 0.0 },
-              { 0.2113248654051872, 0.7886751345948129, 0.0 } } },
-          { { { 0.0, 0.2113248654051872, 0.7886751345948129 },
-              { 0.0, 0.7886751345948129, 0.2113248654051871 } },
-            { { 0.2113248654051872, 0.0, 0.7886751345948129 },
-              { 0.7886751345948129, 0.0, 0.2113248654051871 } },
-            { { 0.2113248654051872, 0.7886751345948129, 0.0 },
-              { 0.7886751345948129, 0.2113248654051872, 0.0 } } } };
-    alignas(32) static const double FE4_C0_D01_F_Q4a8[1][1][1][3] = { { { { -1.0, 0.0, 1.0 } } } };
-    alignas(32) static const double FE4_C0_D10_F_Q4a8[1][1][1][2] = { { { { -1.0, 1.0 } } } };
-    // Quadrature loop independent computations for quadrature rule 4a8
-    const double J_c0 = coordinate_dofs[0] * FE4_C0_D10_F_Q4a8[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D10_F_Q4a8[0][0][0][1];
-    const double J_c1 = coordinate_dofs[0] * FE4_C0_D01_F_Q4a8[0][0][0][0] + coordinate_dofs[2] * FE4_C0_D01_F_Q4a8[0][0][0][1] + coordinate_dofs[4] * FE4_C0_D01_F_Q4a8[0][0][0][2];
-    const double J_c2 = coordinate_dofs[1] * FE4_C0_D10_F_Q4a8[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D10_F_Q4a8[0][0][0][1];
-    const double J_c3 = coordinate_dofs[1] * FE4_C0_D01_F_Q4a8[0][0][0][0] + coordinate_dofs[3] * FE4_C0_D01_F_Q4a8[0][0][0][1] + coordinate_dofs[5] * FE4_C0_D01_F_Q4a8[0][0][0][2];
-    alignas(32) ufc_scalar_t sp_4a8[10];
-    sp_4a8[0] = J_c0 * triangle_reference_facet_jacobian[facet[0]][0][0];
-    sp_4a8[1] = J_c1 * triangle_reference_facet_jacobian[facet[0]][1][0];
-    sp_4a8[2] = sp_4a8[0] + sp_4a8[1];
-    sp_4a8[3] = sp_4a8[2] * sp_4a8[2];
-    sp_4a8[4] = triangle_reference_facet_jacobian[facet[0]][0][0] * J_c2;
-    sp_4a8[5] = triangle_reference_facet_jacobian[facet[0]][1][0] * J_c3;
-    sp_4a8[6] = sp_4a8[4] + sp_4a8[5];
-    sp_4a8[7] = sp_4a8[6] * sp_4a8[6];
-    sp_4a8[8] = sp_4a8[3] + sp_4a8[7];
-    sp_4a8[9] = sqrt(sp_4a8[8]);
-    for (int iq = 0; iq < 2; ++iq)
-    {
-        // Quadrature loop body setup for quadrature rule 4a8
-        // Varying computations for quadrature rule 4a8
-        ufc_scalar_t w1 = 0.0;
-        for (int ic = 0; ic < 3; ++ic)
-            w1 += w[3 + ic] * FE3_C0_F_Q4a8[quadrature_permutation[0]][facet[0]][iq][ic];
-        alignas(32) ufc_scalar_t sv_4a8[1];
-        sv_4a8[0] = sp_4a8[9] * w1;
-        const ufc_scalar_t fw0 = sv_4a8[0] * weights_4a8[iq];
-        for (int i = 0; i < 3; ++i)
-            A[i] += fw0 * FE3_C0_F_Q4a8[quadrature_permutation[0]][facet[0]][iq][i];
-    }
-}
-
-
-ufc_integral* create_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
-{
-  static const bool enabled[2] = { false, true };
-  ufc_integral* integral = (ufc_integral*)malloc(sizeof(*integral));
-  integral->enabled_coefficients = enabled;
-  integral->tabulate_tensor = tabulate_tensor_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  return integral;
-}
-
-// End of code for integral integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59
-
-// Code for form form_ab6d39197b101c4b12be769d26c04ecfcfd0723b
-
-int original_coefficient_position_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+int original_coefficient_position_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int i)
 {
 // Invalid original coefficient index.
 return -1;
 }
 
 // Return a list of the coefficient names.
-const char** coefficient_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+const char** coefficient_name_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(void)
 {
 return NULL;
 }
 
 // Return a list of the constant names.
-const char** constant_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+const char** constant_name_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(void)
 {
-static const char* names[1] = { "kappa" };
-return names;
+return NULL;
 }
 
 ufc_coordinate_mapping* create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b(void);
 
-ufc_coordinate_mapping* create_coordinate_mapping_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+ufc_coordinate_mapping* create_coordinate_mapping_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(void)
 {
 return create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b();
 }
 
 ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
 
-ufc_finite_element* create_finite_element_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+ufc_finite_element* create_finite_element_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int i)
 {
 switch (i)
 {
@@ -1157,7 +1081,7 @@ default:
 
 ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
 
-ufc_dofmap* create_dofmap_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int i)
+ufc_dofmap* create_dofmap_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int i)
 {
 switch (i)
 {
@@ -1170,85 +1094,85 @@ default:
 }
 }
 
-ufc_integral* create_cell_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+ufc_integral* create_cell_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int subdomain_id)
 {
   switch (subdomain_id)
 {
 case -1:
-    return create_integral_cell_otherwise_ab6d39197b101c4b12be769d26c04ecfcfd0723b();
+    return create_integral_cell_otherwise_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058();
 default:
     return NULL;
 }
 }
 
-void get_cell_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+void get_cell_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int *ids)
 {
   ids[0] = -1;
 return;
 }
 
-ufc_integral* create_exterior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+ufc_integral* create_exterior_facet_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int subdomain_id)
 {
   return NULL;
 }
 
-void get_exterior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+void get_exterior_facet_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int *ids)
 {
   return;
 }
 
-ufc_integral* create_interior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+ufc_integral* create_interior_facet_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int subdomain_id)
 {
 return NULL;
 }
 
-void get_interior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+void get_interior_facet_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int *ids)
 {
   return;
 }
 
-ufc_integral* create_vertex_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+ufc_integral* create_vertex_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int subdomain_id)
 {
 return NULL;
 }
 
-void get_vertex_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+void get_vertex_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int *ids)
 {
   return;
 }
 
-ufc_custom_integral* create_custom_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int subdomain_id)
+ufc_custom_integral* create_custom_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int subdomain_id)
 {
 return NULL;
 }
 
-void get_custom_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(int *ids)
+void get_custom_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(int *ids)
 {
   return;
 }
 
-ufc_form* create_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
+ufc_form* create_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058(void)
 {
   ufc_form* form = (ufc_form*)malloc(sizeof(*form));
 
-  form->signature = "978826b7ccb7620d73d2e489936793d043d77856e05cb58da369d7a3f715b906730c0fde429a2fbce635fadb8e56878cc766bcbfc02ceb589b034225dc863423";
+  form->signature = "ce26b0e24fae604fc9c102aa2255fc8942822ef3358564be2e04340dc6d2a14e43a32892995077cd83f53e0d7b026df7e460cd9f1f5a0ee6b6e11406db961a8a";
   form->rank = 2;
   form->num_coefficients = 0;
-  form->num_constants = 1;
-  form->original_coefficient_position = original_coefficient_position_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->num_constants = 0;
+  form->original_coefficient_position = original_coefficient_position_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
 
-  form->coefficient_name_map = coefficient_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->constant_name_map = constant_name_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->coefficient_name_map = coefficient_name_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->constant_name_map = constant_name_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
 
-  form->create_coordinate_mapping = create_coordinate_mapping_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_finite_element = create_finite_element_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_dofmap = create_dofmap_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_coordinate_mapping = create_coordinate_mapping_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_finite_element = create_finite_element_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_dofmap = create_dofmap_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
 
-  form->get_cell_integral_ids = get_cell_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->get_vertex_integral_ids = get_vertex_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->get_custom_integral_ids = get_custom_integral_ids_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->get_cell_integral_ids = get_cell_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->get_vertex_integral_ids = get_vertex_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->get_custom_integral_ids = get_custom_integral_ids_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
 
   form->num_cell_integrals = 1;
   form->num_exterior_facet_integrals = 0;
@@ -1256,18 +1180,18 @@ ufc_form* create_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b(void)
   form->num_vertex_integrals = 0;
   form->num_custom_integrals = 0;
 
-  form->create_cell_integral = create_cell_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_exterior_facet_integral = create_exterior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_interior_facet_integral = create_interior_facet_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_vertex_integral = create_vertex_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
-  form->create_custom_integral = create_custom_integral_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b;
+  form->create_cell_integral = create_cell_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_exterior_facet_integral = create_exterior_facet_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_interior_facet_integral = create_interior_facet_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_vertex_integral = create_vertex_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
+  form->create_custom_integral = create_custom_integral_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058;
 
   return form;
 }
 
 ufc_form* create_form_poisson_a(void)
 {
-  return create_form_ab6d39197b101c4b12be769d26c04ecfcfd0723b();
+  return create_form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058();
 }
 
 ufc_function_space* create_functionspace_form_poisson_a(const char* function_name)
@@ -1292,52 +1216,50 @@ return NULL;
 
 }
 
-// End of code for form form_ab6d39197b101c4b12be769d26c04ecfcfd0723b
+// End of code for form form_da7f1bc60ef129b77a0cf9a0e24b8922d9cce058
 
-// Code for form form_70ac65295cde4ee9720845a2b33df1637e8afd59
+// Code for form form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
 
-int original_coefficient_position_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+int original_coefficient_position_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int i)
 {
-if (i >= 2)
+if (i >= 1)
 {
     // Invalid original coefficient index.
     return -1;
 }
-static const int position[2] = { 0, 1 };
+static const int position[1] = { 0 };
 return position[i];
 }
 
 // Return a list of the coefficient names.
-const char** coefficient_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+const char** coefficient_name_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(void)
 {
-static const char* names[2] = { "f", "g" };
+static const char* names[1] = { "f" };
 return names;
 }
 
 // Return a list of the constant names.
-const char** constant_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+const char** constant_name_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(void)
 {
 return NULL;
 }
 
 ufc_coordinate_mapping* create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b(void);
 
-ufc_coordinate_mapping* create_coordinate_mapping_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+ufc_coordinate_mapping* create_coordinate_mapping_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(void)
 {
 return create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b();
 }
 
 ufc_finite_element* create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
 
-ufc_finite_element* create_finite_element_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+ufc_finite_element* create_finite_element_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int i)
 {
 switch (i)
 {
 case 0:
     return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
 case 1:
-    return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
-case 2:
     return create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
 default:
     return NULL;
@@ -1346,7 +1268,7 @@ default:
 
 ufc_dofmap* create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8(void);
 
-ufc_dofmap* create_dofmap_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int i)
+ufc_dofmap* create_dofmap_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int i)
 {
 switch (i)
 {
@@ -1354,118 +1276,109 @@ case 0:
     return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
 case 1:
     return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
-case 2:
-    return create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8();
 default:
     return NULL;
 }
 }
 
-ufc_integral* create_cell_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+ufc_integral* create_cell_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int subdomain_id)
 {
   switch (subdomain_id)
 {
 case -1:
-    return create_integral_cell_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59();
+    return create_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8();
 default:
     return NULL;
 }
 }
 
-void get_cell_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+void get_cell_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int *ids)
 {
   ids[0] = -1;
 return;
 }
 
-ufc_integral* create_exterior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+ufc_integral* create_exterior_facet_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int subdomain_id)
 {
-  switch (subdomain_id)
-{
-case -1:
-    return create_integral_exterior_facet_otherwise_70ac65295cde4ee9720845a2b33df1637e8afd59();
-default:
-    return NULL;
-}
+  return NULL;
 }
 
-void get_exterior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
-{
-  ids[0] = -1;
-return;
-}
-
-ufc_integral* create_interior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
-{
-return NULL;
-}
-
-void get_interior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+void get_exterior_facet_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int *ids)
 {
   return;
 }
 
-ufc_integral* create_vertex_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+ufc_integral* create_interior_facet_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int subdomain_id)
 {
 return NULL;
 }
 
-void get_vertex_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+void get_interior_facet_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int *ids)
 {
   return;
 }
 
-ufc_custom_integral* create_custom_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int subdomain_id)
+ufc_integral* create_vertex_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int subdomain_id)
 {
 return NULL;
 }
 
-void get_custom_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59(int *ids)
+void get_vertex_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int *ids)
 {
   return;
 }
 
-ufc_form* create_form_70ac65295cde4ee9720845a2b33df1637e8afd59(void)
+ufc_custom_integral* create_custom_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int subdomain_id)
+{
+return NULL;
+}
+
+void get_custom_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(int *ids)
+{
+  return;
+}
+
+ufc_form* create_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8(void)
 {
   ufc_form* form = (ufc_form*)malloc(sizeof(*form));
 
-  form->signature = "c21e4b8225a06c865b1f6bc50789ab26a096d3b0d2aa6da671abca48fc3af12bf1c8bf5ce9222b5262f53aaf4355d51682ac6c504f77abeba824f9746d853a49";
+  form->signature = "59735b6e5199cd9ab7dfed9d38c6b178340fb81e6a6fe206cf194b4982897df58ed817115db15ced297d2bc0f178c1358d4d8ab663a1cba93a39dc83522bf2c4";
   form->rank = 1;
-  form->num_coefficients = 2;
+  form->num_coefficients = 1;
   form->num_constants = 0;
-  form->original_coefficient_position = original_coefficient_position_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->original_coefficient_position = original_coefficient_position_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
 
-  form->coefficient_name_map = coefficient_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->constant_name_map = constant_name_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->coefficient_name_map = coefficient_name_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->constant_name_map = constant_name_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
 
-  form->create_coordinate_mapping = create_coordinate_mapping_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_finite_element = create_finite_element_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_dofmap = create_dofmap_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_coordinate_mapping = create_coordinate_mapping_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_finite_element = create_finite_element_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_dofmap = create_dofmap_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
 
-  form->get_cell_integral_ids = get_cell_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->get_vertex_integral_ids = get_vertex_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->get_custom_integral_ids = get_custom_integral_ids_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->get_cell_integral_ids = get_cell_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->get_exterior_facet_integral_ids = get_exterior_facet_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->get_interior_facet_integral_ids = get_interior_facet_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->get_vertex_integral_ids = get_vertex_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->get_custom_integral_ids = get_custom_integral_ids_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
 
   form->num_cell_integrals = 1;
-  form->num_exterior_facet_integrals = 1;
+  form->num_exterior_facet_integrals = 0;
   form->num_interior_facet_integrals = 0;
   form->num_vertex_integrals = 0;
   form->num_custom_integrals = 0;
 
-  form->create_cell_integral = create_cell_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_exterior_facet_integral = create_exterior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_interior_facet_integral = create_interior_facet_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_vertex_integral = create_vertex_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
-  form->create_custom_integral = create_custom_integral_form_70ac65295cde4ee9720845a2b33df1637e8afd59;
+  form->create_cell_integral = create_cell_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_exterior_facet_integral = create_exterior_facet_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_interior_facet_integral = create_interior_facet_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_vertex_integral = create_vertex_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
+  form->create_custom_integral = create_custom_integral_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8;
 
   return form;
 }
 
 ufc_form* create_form_poisson_L(void)
 {
-  return create_form_70ac65295cde4ee9720845a2b33df1637e8afd59();
+  return create_form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8();
 }
 
 ufc_function_space* create_functionspace_form_poisson_L(const char* function_name)
@@ -1486,16 +1399,8 @@ else if (strcmp(function_name, "f") == 0)
     space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
     return space;
 }
-else if (strcmp(function_name, "g") == 0)
-{
-    ufc_function_space* space = (ufc_function_space*)malloc(sizeof(*space));
-    space->create_element = create_element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
-    space->create_dofmap = create_dofmap_beec23b1db5ec63c6d17d04656f9c5f66e894bc8;
-    space->create_coordinate_mapping = create_coordinate_mapping_3a97ce1614d0b3d17156bebc5c3af9396ebdf43b;
-    return space;
-}
 return NULL;
 
 }
 
-// End of code for form form_70ac65295cde4ee9720845a2b33df1637e8afd59
+// End of code for form form_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
