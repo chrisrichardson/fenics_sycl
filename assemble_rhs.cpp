@@ -40,7 +40,7 @@ void assemble_rhs(cl::sycl::queue& queue,
         w[j] = access_coeff[i][j];
 
       // Pull out points for this cell
-      for (int j = 0; j < coord_dims[1]; ++j)
+      for (std::size_t j = 0; j < coord_dims[1]; ++j)
       {
         const std::size_t dmi = access_cdm[i][j];
         for (int k = 0; k < gdim; ++k)

@@ -15,7 +15,6 @@
 //   'table_rtol': 1e-06,
 //   'tabulate_tensor_void': False}
 
-
 typedef double ufc_scalar_t;
 #include <math.h>
 #include <stdalign.h>
@@ -24,6 +23,10 @@ typedef double ufc_scalar_t;
 #include <string.h>
 #include <ufc.h>
 #define restrict __restrict__
+
+// #ifdef __SYCL_DEVICE_ONLY__
+// #define fabs cl::sycl::fabs
+// #endif
 
 // Code for element element_beec23b1db5ec63c6d17d04656f9c5f66e894bc8
 
