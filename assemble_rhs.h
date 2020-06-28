@@ -8,6 +8,7 @@ void assemble_rhs(cl::sycl::queue& queue,
                   cl::sycl::buffer<double, 1>& accum_buf,
                   cl::sycl::buffer<double, 2>& geom_buf,
                   cl::sycl::buffer<int, 2>& coord_dm_buf,
+                  cl::sycl::buffer<double, 2>& coeff_buf,
                   cl::sycl::buffer<int, 2>& fi_buf);
 
 // Submit accumulation kernels to queue

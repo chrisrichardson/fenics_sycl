@@ -6,9 +6,9 @@
 #include <iostream>
 #include <numeric>
 
-#include "poisson.h"
 #include "assemble_rhs.h"
 #include "dolfin_interface.h"
+#include "poisson.h"
 
 // Simple code to assemble a dummy RHS vector over some dummy geometry and
 // dofmap
@@ -17,6 +17,12 @@ int main(int argc, char* argv[])
 
   // Get dolfin data
   auto [coord_dm, geometry, function_dm] = create_arrays(argc, argv);
+
+  Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> coeff(
+      function_dm.rows(), 3);
+  coeff.col(0) = 1;
+  coeff.col(1) = 2;
+  coeff.col(2) = 3;
 
   int nelem = function_dm.rows();
   int nelem_dofs = function_dm.cols();
@@ -70,11 +76,14 @@ int main(int argc, char* argv[])
     cl::sycl::buffer<double, 2> geom_buf(geometry.data(),
                                          {(std::size_t)npoints, 3});
 
+    cl::sycl::buffer<double, 2> coeff_buf(
+        coeff.data(), {(std::size_t)coeff.rows(), (std::size_t)coeff.cols()});
+
     cl::sycl::buffer<int, 2> fi_buf(
         flat_index.data(),
         {(std::size_t)flat_index.rows(), (std::size_t)flat_index.cols()});
 
-    assemble_rhs(queue, ac_buf, geom_buf, coord_dm_buf, fi_buf);
+    assemble_rhs(queue, ac_buf, geom_buf, coord_dm_buf, coeff_buf, fi_buf);
   }
 
   // Global RHS vector (into which accum_buf will be summed)

@@ -12,6 +12,7 @@ void assemble_rhs(cl::sycl::queue& queue,
                   cl::sycl::buffer<double, 1>& accum_buf,
                   cl::sycl::buffer<double, 2>& geom_buf,
                   cl::sycl::buffer<int, 2>& coord_dm_buf,
+                  cl::sycl::buffer<double, 2>& coeff_buf,
                   cl::sycl::buffer<int, 2>& fi_buf)
 {
   queue.submit([&](cl::sycl::handler& cgh) {
@@ -19,20 +20,24 @@ void assemble_rhs(cl::sycl::queue& queue,
     auto access_cdm
         = coord_dm_buf.get_access<cl::sycl::access::mode::read>(cgh);
     auto access_fi = fi_buf.get_access<cl::sycl::access::mode::read>(cgh);
+    auto access_coeff = coeff_buf.get_access<cl::sycl::access::mode::read>(cgh);
     auto access_ac = accum_buf.get_access<cl::sycl::access::mode::write>(cgh);
     cl::sycl::range<2> coord_dims = coord_dm_buf.get_range();
     cl::sycl::range<2> fi_dims = fi_buf.get_range();
     cl::sycl::range<1> nelem_sycl{fi_dims[0]};
     int nelem_dofs = fi_dims[1];
+    int ncoeff = coeff_buf.get_range()[1];
     int gdim = 2;
 
     auto kern = [=](cl::sycl::id<1> wiID) {
       const int i = wiID[0];
 
       double cell_geom[6];
+      double w[32];
       double b[3] = {0};
-      double w[3] = {1, 2, 3};
       double c[1] = {0};
+      for (int j = 0; j < ncoeff; ++j)
+        w[j] = access_coeff[i][j];
 
       // Pull out points for this cell
       for (int j = 0; j < coord_dims[1]; ++j)
