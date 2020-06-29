@@ -1,5 +1,6 @@
 
 #include "assemble_rhs.h"
+#include <iostream>
 
 // Need to include C file in same translation unit as lambda
 #include "poisson.c"
@@ -33,11 +34,11 @@ void assemble_rhs(cl::sycl::queue& queue,
       const int i = wiID[0];
 
       double cell_geom[6];
-      double w[32];
+      double w[3] = {1, 2, 3};
       double b[3] = {0};
       double c[1] = {0};
-      for (int j = 0; j < ncoeff; ++j)
-        w[j] = access_coeff[i][j];
+      //      for (int j = 0; j < ncoeff; ++j)
+      //        w[j] = access_coeff[i][j];
 
       // Pull out points for this cell
       for (std::size_t j = 0; j < coord_dims[1]; ++j)
@@ -59,6 +60,16 @@ void assemble_rhs(cl::sycl::queue& queue,
     };
     cgh.parallel_for<AssemblyKernel>(nelem_sycl, kern);
   });
+
+  try
+  {
+    queue.wait_and_throw();
+  }
+  catch (sycl::exception const& e)
+  {
+    std::cout << "Caught synchronous SYCL exception:\n"
+              << e.what() << std::endl;
+  }
 }
 
 class AccumulationKernel;
@@ -85,4 +96,14 @@ void accumulate_rhs(cl::sycl::queue& queue, cl::sycl::buffer<double, 1>& ac_buf,
     };
     cgh.parallel_for<AccumulationKernel>(ndofs_sycl, kern);
   });
+
+  try
+  {
+    queue.wait_and_throw();
+  }
+  catch (sycl::exception const& e)
+  {
+    std::cout << "Caught synchronous SYCL exception:\n"
+              << e.what() << std::endl;
+  }
 }

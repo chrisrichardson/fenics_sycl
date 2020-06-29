@@ -10,6 +10,22 @@
 #include "dolfin_interface.h"
 #include "poisson.h"
 
+void exception_handler(sycl::exception_list exceptions)
+{
+  for (std::exception_ptr const& e : exceptions)
+  {
+    try
+    {
+      std::rethrow_exception(e);
+    }
+    catch (sycl::exception const& e)
+    {
+      std::cout << "Caught asynchronous SYCL exception:\n"
+                << e.what() << std::endl;
+    }
+  }
+}
+
 // Simple code to assemble a dummy RHS vector over some dummy geometry and
 // dofmap
 int main(int argc, char* argv[])
@@ -59,7 +75,7 @@ int main(int argc, char* argv[])
 
   // Get a queue
   cl::sycl::default_selector device_selector;
-  cl::sycl::queue queue(device_selector);
+  cl::sycl::queue queue(device_selector, exception_handler);
   std::cout << "Running on "
             << queue.get_device().get_info<sycl::info::device::name>() << "\n";
 
