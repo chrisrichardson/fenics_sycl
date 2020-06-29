@@ -1,6 +1,8 @@
 
 #include <CL/sycl.hpp>
 
+#include <dolfinx.h>
+
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
@@ -26,19 +28,92 @@ void exception_handler(sycl::exception_list exceptions)
   }
 }
 
+using namespace dolfinx;
+
+graph::AdjacencyList<std::int32_t>
+create_flat_index(const graph::AdjacencyList<std::int32_t>& dofmap)
+{
+  const int ndofs = dofmap.array().maxCoeff() + 1;
+
+  // Count the number of occurences of each dof
+  std::vector<int> dof_counter(ndofs, 0);
+  for (int i = 0; i < dofmap.num_nodes(); ++i)
+  {
+    auto dofmap_i = dofmap.links(i);
+    for (int j = 0; j < dofmap_i.size(); ++j)
+      ++dof_counter[dofmap_i[j]];
+  }
+  std::vector<int> dof_offsets(ndofs + 1, 0);
+  std::partial_sum(dof_counter.begin(), dof_counter.end(),
+                   dof_offsets.begin() + 1);
+  assert(dof_offsets.back() == dofmap.array().size());
+
+  std::vector<int> tmp_offsets(dof_offsets.begin(), dof_offsets.end());
+  std::vector<int> flat_index(dof_offsets.back());
+  int c = 0;
+  for (int i = 0; i < dofmap.num_nodes(); ++i)
+  {
+    auto dofmap_i = dofmap.links(i);
+    for (int j = 0; j < dofmap_i.size(); ++j)
+      flat_index[c++] = tmp_offsets[dofmap_i[j]]++;
+  }
+
+  return graph::AdjacencyList<std::int32_t>(flat_index, dof_offsets);
+}
+
 // Simple code to assemble a dummy RHS vector over some dummy geometry and
 // dofmap
 int main(int argc, char* argv[])
 {
+  common::SubSystemsManager::init_logging(argc, argv);
+  common::SubSystemsManager::init_mpi(argc, argv, 0);
+  common::SubSystemsManager::init_petsc(argc, argv);
 
-  // Get dolfin data
-  auto [coord_dm, geometry, function_dm] = create_arrays(argc, argv);
+  auto cmap = fem::create_coordinate_map(create_coordinate_map_poisson);
+  std::array<Eigen::Vector3d, 2> pt{Eigen::Vector3d(0.0, 0.0, 0.0),
+                                    Eigen::Vector3d(1.0, 1.0, 0.0)};
+  auto mesh = std::make_shared<mesh::Mesh>(generation::RectangleMesh::create(
+      MPI_COMM_WORLD, pt, {{320, 320}}, cmap, mesh::GhostMode::none));
 
-  Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> coeff(
-      function_dm.rows(), 3);
-  coeff.col(0) = 1;
-  coeff.col(1) = 2;
-  coeff.col(2) = 3;
+  const graph::AdjacencyList<std::int32_t>& x_dofmap
+      = mesh->geometry().dofmap();
+
+  // Dofmap will be fixed width for this mesh, so copy to simple 2D array
+  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> coord_dm(
+      x_dofmap.num_nodes(), x_dofmap.num_links(0));
+  std::copy(x_dofmap.array().data(),
+            x_dofmap.array().data()
+                + x_dofmap.num_nodes() * x_dofmap.num_links(0),
+            coord_dm.data());
+
+  const Eigen::Array<double, Eigen::Dynamic, 3, Eigen::RowMajor>& geometry
+      = mesh->geometry().x();
+
+  auto V = fem::create_functionspace(create_functionspace_form_poisson_a, "u",
+                                     mesh);
+  std::shared_ptr<fem::Form> L = fem::create_form(create_form_poisson_L, {V});
+  
+ const graph::AdjacencyList<std::int32_t>& v_dofmap = V->dofmap()->list();
+  // Create permuted dofmap for insertion into array
+  const graph::AdjacencyList<std::int32_t> flat_dm
+      = create_flat_index(v_dofmap);
+
+  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+      function_dm(v_dofmap.num_nodes(), v_dofmap.num_links(0));
+  std::copy(v_dofmap.array().data(),
+            v_dofmap.array().data()
+                + v_dofmap.num_nodes() * v_dofmap.num_links(0),
+            function_dm.data());
+
+  auto f = std::make_shared<function::Function>(V);
+  f->interpolate([](auto& x) {
+    auto dx = Eigen::square(x - 0.5);
+    return 10.0 * Eigen::exp(-(dx.row(0) + dx.row(1)) / 0.02);
+  });
+  L->set_coefficients({{"f", f}});
+
+  Eigen::Array<PetscScalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
+    coeff = fem::pack_coefficients(*L);
 
   int nelem = function_dm.rows();
   int nelem_dofs = function_dm.cols();
@@ -48,30 +123,6 @@ int main(int argc, char* argv[])
 
   const int npoints = coord_dm.maxCoeff() + 1;
   std::cout << "npoints = " << npoints << "\n";
-
-  // Count number of entries for each dof and make offset array
-  std::vector<int> dof_counter(ndofs, 0);
-  for (int i = 0; i < nelem; ++i)
-  {
-    for (int j = 0; j < nelem_dofs; ++j)
-      ++dof_counter[function_dm(i, j)];
-  }
-  std::vector<int> dof_offsets(ndofs + 1, 0);
-  std::partial_sum(dof_counter.begin(), dof_counter.end(),
-                   dof_offsets.begin() + 1);
-  assert(dof_offsets.back() == nelem * nelem_dofs);
-
-  // Make a "flat index" array listing where each assembly entry should be
-  // placed. This is just a permutation, so that the entries that belong to the
-  // same dof index are next to each other.
-  std::vector<int> tmp_offsets(dof_offsets.begin(), dof_offsets.end());
-  Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> flat_index(
-      nelem, nelem_dofs);
-  for (int i = 0; i < nelem; ++i)
-  {
-    for (int j = 0; j < nelem_dofs; ++j)
-      flat_index(i, j) = tmp_offsets[function_dm(i, j)]++;
-  }
 
   // Get a queue
   cl::sycl::default_selector device_selector;
@@ -96,8 +147,7 @@ int main(int argc, char* argv[])
         coeff.data(), {(std::size_t)coeff.rows(), (std::size_t)coeff.cols()});
 
     cl::sycl::buffer<int, 2> fi_buf(
-        flat_index.data(),
-        {(std::size_t)flat_index.rows(), (std::size_t)flat_index.cols()});
+        flat_dm.array().data(), {(std::size_t)nelem, (std::size_t)nelem_dofs});
 
     assemble_rhs(queue, ac_buf, geom_buf, coord_dm_buf, coeff_buf, fi_buf);
   }
@@ -109,7 +159,8 @@ int main(int argc, char* argv[])
   {
     cl::sycl::buffer<double, 1> gv_buf(global_vector.data(),
                                        global_vector.size());
-    cl::sycl::buffer<int, 1> off_buf(dof_offsets.data(), dof_offsets.size());
+    cl::sycl::buffer<int, 1> off_buf(flat_dm.offsets().data(),
+                                     flat_dm.offsets().size());
     accumulate_rhs(queue, ac_buf, gv_buf, off_buf);
   }
 
@@ -129,8 +180,6 @@ int main(int argc, char* argv[])
   auto integral = form->create_cell_integral(-1);
   auto tabulate_L = integral->tabulate_tensor;
 
-  // Coefficient (RHS source term) - constant on each cell
-  Eigen::Array<double, 3, 1> w = {1.0, 2.0, 3.0};
   // Element local RHS
   Eigen::Array<double, 3, 1> b;
   // Element local geometry
@@ -144,7 +193,7 @@ int main(int argc, char* argv[])
 
     b.setZero();
     // Get local values
-    tabulate_L(b.data(), w.data(), nullptr, cell_geometry.data(), nullptr,
+    tabulate_L(b.data(), coeff.row(i).data(), nullptr, cell_geometry.data(), nullptr,
                nullptr, 0);
 
     // Fill global vector

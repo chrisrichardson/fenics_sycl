@@ -34,11 +34,11 @@ void assemble_rhs(cl::sycl::queue& queue,
       const int i = wiID[0];
 
       double cell_geom[6];
-      double w[3] = {1, 2, 3};
+      double w[3] = {0};
       double b[3] = {0};
       double c[1] = {0};
-      //      for (int j = 0; j < ncoeff; ++j)
-      //        w[j] = access_coeff[i][j];
+      for (int j = 0; j < ncoeff; ++j)
+        w[j] = access_coeff[i][j];
 
       // Pull out points for this cell
       for (std::size_t j = 0; j < coord_dims[1]; ++j)
