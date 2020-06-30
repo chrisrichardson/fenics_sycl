@@ -5,7 +5,8 @@
 // Need to include C file in same translation unit as lambda
 #include "poisson.c"
 #define tabulate_L                                                             \
-  tabulate_tensor_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
+ tabulate_tensor_integral_cell_otherwise_5c190cf5c2fdd7607007457553972e50fddca3b5
+// tabulate_tensor_integral_cell_otherwise_d5110eeede6a6d5fef6fa5fa9759f7bdb8a989e8
 
 class AssemblyKernel;
 
@@ -28,15 +29,15 @@ void assemble_rhs(cl::sycl::queue& queue,
     cl::sycl::range<1> nelem_sycl{fi_dims[0]};
     int nelem_dofs = fi_dims[1];
     int ncoeff = coeff_buf.get_range()[1];
-    int gdim = 2;
+    int gdim = 3;
 
     auto kern = [=](cl::sycl::id<1> wiID) {
       const int i = wiID[0];
 
-      double cell_geom[6];
-      double w[3] = {0};
-      double b[3] = {0};
-      double c[1] = {0};
+      double cell_geom[12];
+      double w[32] = {0};
+      double b[32] = {0};
+      double c[32] = {0};
       for (int j = 0; j < ncoeff; ++j)
         w[j] = access_coeff[i][j];
 

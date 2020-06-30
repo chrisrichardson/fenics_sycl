@@ -68,11 +68,16 @@ int main(int argc, char* argv[])
   common::SubSystemsManager::init_mpi(argc, argv, 0);
   common::SubSystemsManager::init_petsc(argc, argv);
 
+  int nx = 32;
+  if (argc == 2)
+    nx = std::stoi(argv[1]);
+  
+
   auto cmap = fem::create_coordinate_map(create_coordinate_map_poisson);
   std::array<Eigen::Vector3d, 2> pt{Eigen::Vector3d(0.0, 0.0, 0.0),
-                                    Eigen::Vector3d(1.0, 1.0, 0.0)};
-  auto mesh = std::make_shared<mesh::Mesh>(generation::RectangleMesh::create(
-      MPI_COMM_WORLD, pt, {{320, 320}}, cmap, mesh::GhostMode::none));
+                                    Eigen::Vector3d(1.0, 1.0, 1.0)};
+  auto mesh = std::make_shared<mesh::Mesh>(generation::BoxMesh::create(
+                                                                       MPI_COMM_WORLD, pt, {{nx, nx, nx}}, cmap, mesh::GhostMode::none));
 
   const graph::AdjacencyList<std::int32_t>& x_dofmap
       = mesh->geometry().dofmap();
@@ -124,7 +129,7 @@ int main(int argc, char* argv[])
   std::cout << "npoints = " << npoints << "\n";
 
   // Get a queue
-  cl::sycl::default_selector device_selector;
+  cl::sycl::host_selector device_selector;
   cl::sycl::queue queue(device_selector, exception_handler);
   std::cout << "Running on "
             << queue.get_device().get_info<sycl::info::device::name>() << "\n";
